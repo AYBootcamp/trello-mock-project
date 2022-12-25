@@ -1,4 +1,4 @@
-# Backend Technical Specifications
+# {name} Technical Specifications
 
 >
 >**Text in grey background explains the section**
