@@ -10,6 +10,10 @@
 >
 >* The Who/What/When/Where/Why
 
+The <ins>Trello mock backend</ins> will utilize [**ExpressJS**](https://expressjs.com/) framework to implement a handful of RESTful endpoints that will handle HTTP requests from <ins>Trello mock frontend</ins> to perform the CRUD functionalities of the data stored on AWS's DynamoDB.
+
+The list of available endpoints are documented here:  
+
 ## Background
 
 >Context of the project.
