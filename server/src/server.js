@@ -22,7 +22,7 @@ const swaggerOptions = {
 
 const app = express()
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-let books = [];
+let books = [{ id: '123', title: 'Harry Potter' }];
 
 // Middleware
 app.use(cors())
@@ -49,5 +49,5 @@ app.get('/books', (req, res) => {
     res.json(books);
 });
 
-
+// Start the server
 app.listen(PORT, () => console.log(`Server started on port ${PORT}! \n-------------`))
