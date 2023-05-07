@@ -10,9 +10,7 @@
 >
 >* The Who/What/When/Where/Why
 
-The <ins>Trello mock backend</ins> will utilize [**ExpressJS**](https://expressjs.com/) framework to implement a handful of RESTful endpoints that will handle HTTP requests from <ins>Trello mock frontend</ins> to perform the CRUD functionalities of the data stored on AWS's DynamoDB.
-
-The list of available endpoints are documented here:  
+The <ins>Trello mock backend</ins> is a serverless design architecture to with support of a handful of RESTful endpoints that will handle HTTP requests from <ins>Trello mock frontend</ins> to perform the CRUD functionalities of the data stored on AWS's DynamoDB.
 
 ## Background
 
@@ -20,11 +18,7 @@ The list of available endpoints are documented here:
 >* What's the motivation of this project
 >* What problems are we solving here
 
-Part of the web development bootcamp experience requires API calling and data handling exercises.
-
-To support this we want to provide simple CRUD functionalities through RESTFul endpoints.
-
-We need to find ways to host the server and the database. (locally or on cloud)
+This project is to build the API support for trello-mock-frontend.
 
 ## Goals
 
@@ -39,7 +33,8 @@ The final product should be able:
 
 We'd like to explore possible solutions with these technologies:
 - AWS DynamoDB
-- NodeJS - ExpressJS
+- AWS Lambda Functions
+- AWS API Gateway
 
 ## Non-goals
 
