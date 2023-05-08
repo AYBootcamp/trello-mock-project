@@ -54,6 +54,10 @@ Things we will not implement: (but are commonly seen in other similar projects)
 >* Illustrations, diagrams
 
 ### Flowchart
+
+![Simplified Flowchart](https://guohao-public-assets.s3.ca-central-1.amazonaws.com/trello-clone-backend-flowchart.drawio.png "Flowchart")
+
+
 ### Data Model
 ### Endpoints
 
