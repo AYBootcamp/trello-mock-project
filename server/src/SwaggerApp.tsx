@@ -2,8 +2,10 @@ import 'swagger-ui-react/swagger-ui.css'
 
 import SwaggerUI from 'swagger-ui-react'
 
+import specJSON from './trello-clone-swagger.json'
+
 const SwaggerApp = () => {
-    return <SwaggerUI url="https://petstore.swagger.io/v2/swagger.json" />
+    return <SwaggerUI spec={specJSON} />
 }
 
 export default SwaggerApp

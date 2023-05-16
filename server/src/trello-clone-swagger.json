@@ -1,0 +1,368 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Trello Clone App",
+    "description": "API for managing Trello resources",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "https://api.example.com/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Card",
+      "description": "APIs related to Card objects"
+    },
+    {
+      "name": "List",
+      "description": "APIs related to List objects"
+    }
+  ],
+  "paths": {
+    "/getCards": {
+      "get": {
+        "tags": [
+          "Card"
+        ],
+        "summary": "Retrieve array of Card",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "description": "Filtering by Card's title"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "card-123-456-789",
+                    "title": "Example Card",
+                    "listId": "567-890-123",
+                    "rank": 1,
+                    "label": [
+                      {
+                        "name": "Example Label",
+                        "color": "#ff0000"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/createCard": {
+      "post": {
+        "tags": [
+          "Card"
+        ],
+        "summary": "Create a new List",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Card"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateCard/{id}": {
+      "put": {
+        "tags": [
+          "Card"
+        ],
+        "summary": "Update an existing Card",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully updated Card",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deleteCard/{id}": {
+      "delete": {
+        "tags": [
+          "Card"
+        ],
+        "summary": "Delete a Card by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted Card"
+          }
+        }
+      }
+    },
+    "/getLists": {
+      "get": {
+        "tags": [
+          "List"
+        ],
+        "summary": "Retrieve array of List",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "description": "Filtering by List's title"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved Lists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/List"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "list-123-456-789",
+                    "title": "Example List",
+                    "rank": 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/createList": {
+      "post": {
+        "tags": [
+          "List"
+        ],
+        "summary": "Create a new List",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/List"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateList/{id}": {
+      "put": {
+        "tags": [
+          "List"
+        ],
+        "summary": "Update an existing List",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully updated List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/List"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deleteList/{id}": {
+      "delete": {
+        "tags": [
+          "List"
+        ],
+        "summary": "Delete a List by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully deleted List"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Label": {
+        "required": [
+          "color",
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string",
+            "description": "HEX code value for color"
+          }
+        }
+      },
+      "Card": {
+        "required": [
+          "id",
+          "listId",
+          "rank",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "listId": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            }
+          }
+        }
+      },
+      "List": {
+        "required": [
+          "id",
+          "rank",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
