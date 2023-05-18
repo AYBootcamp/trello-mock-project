@@ -9,14 +9,29 @@ AWS.config.update({
 const docClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = 'trello-card'
 
-const params = {
+const defaultParams = {
     TableName: TABLE_NAME,
-    FilterExpression: 'contains (title, :substring)',
-    ExpressionAttributeValues: {
-        ':substring': 'test'
-    },
     ScanIndexForward: true // Optional sorting option (true for ascending, false for descending)
-};
+}
+
+const paramsByFunction = {
+    filterByTitleSubstring: {
+        ...defaultParams,
+        FilterExpression: 'contains (title, :substring)',
+        ExpressionAttributeValues: {
+            ':substring': 'test'
+        },
+    },
+    filterByListId: {
+        ...defaultParams,
+        FilterExpression: 'listId = :listIdValue',
+        ExpressionAttributeValues: {
+            ':listIdValue': '485dbda6-c4dc-4930-a90a-940c48317ccd'
+        },
+    }
+}
+
+const params = paramsByFunction.filterByListId
 
 docClient.scan(params, (err, data) => {
     if (err) {
