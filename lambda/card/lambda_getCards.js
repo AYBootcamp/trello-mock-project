@@ -1,17 +1,14 @@
-/* global process */
 import AWS from 'aws-sdk'
 
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_DEFAULT_REGION
+    region: 'ca-central-1'
 });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = 'trello-card'
 
 export const handler = async (event) => {
-    const { title, listId } = event
+    const { substring, listId } = event
 
     try {
         // Define the scan parameters
@@ -21,9 +18,9 @@ export const handler = async (event) => {
         };
 
         // Check if filtering by title substring is requested
-        if (title) {
+        if (substring) {
             params.FilterExpression = 'contains(title, :title)';
-            params.ExpressionAttributeValues = { ':title': title };
+            params.ExpressionAttributeValues = { ':title': substring };
         }
 
         // Check if filtering by matching listId is requested

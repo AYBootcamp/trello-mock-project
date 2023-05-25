@@ -9,9 +9,6 @@
     {
       "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0",
       "description": "SwaggerHub API Auto Mocking"
-    },
-    {
-      "url": "https://api.example.com/v1"
     }
   ],
   "tags": [
@@ -22,6 +19,10 @@
     {
       "name": "List",
       "description": "APIs related to List objects"
+    },
+    {
+      "name": "Order",
+      "description": "APIs related to Card and List orders"
     }
   ],
   "paths": {
@@ -42,6 +43,17 @@
               "type": "string",
               "description": "Filtering by Card's title"
             }
+          },
+          {
+            "name": "listId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "description": "Filtering by List Id"
+            }
           }
         ],
         "responses": {
@@ -60,7 +72,6 @@
                     "id": "card-123-456-789",
                     "title": "Example Card",
                     "listId": "567-890-123",
-                    "rank": 1,
                     "label": [
                       {
                         "name": "Example Label",
@@ -133,6 +144,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -158,6 +179,16 @@
         "responses": {
           "204": {
             "description": "Successfully deleted Card"
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -195,8 +226,7 @@
                 "example": [
                   {
                     "id": "list-123-456-789",
-                    "title": "Example List",
-                    "rank": 1
+                    "title": "Example List"
                   }
                 ]
               }
@@ -263,6 +293,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -288,6 +328,122 @@
         "responses": {
           "204": {
             "description": "Successfully deleted List"
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getCardOrder": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Retrieve order of Cards by List",
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved CardOrder",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardOrder"
+                },
+                "example": [
+                  {
+                    "id": "cardOrder-123-456-789",
+                    "listId": "list-321-654-978",
+                    "orderedCardIds": [
+                      "card-123-456",
+                      "card-124-356",
+                      "card-132-465"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getListOrder": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Retrieve order of Lists by Board",
+        "parameters": [
+          {
+            "name": "boardId",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved ListOrder",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOrder"
+                },
+                "example": [
+                  {
+                    "id": "cardOrder-123-456-789",
+                    "boardId": "board-321-654-978",
+                    "orderedCardIds": [
+                      "list-123-456",
+                      "list-124-356",
+                      "list-132-465"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -319,7 +475,6 @@
         "required": [
           "id",
           "listId",
-          "rank",
           "title"
         ],
         "type": "object",
@@ -333,9 +488,6 @@
           "listId": {
             "type": "string"
           },
-          "rank": {
-            "type": "integer"
-          },
           "labels": {
             "type": "array",
             "items": {
@@ -347,7 +499,6 @@
       "List": {
         "required": [
           "id",
-          "rank",
           "title"
         ],
         "type": "object",
@@ -357,9 +508,58 @@
           },
           "title": {
             "type": "string"
+          }
+        }
+      },
+      "CardOrder": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
           },
-          "rank": {
-            "type": "integer"
+          "listId": {
+            "type": "string"
+          },
+          "orderedCardIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ListOrder": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "boardId": {
+            "type": "string"
+          },
+          "orderedListIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/Error_error"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true
           }
         }
       }
