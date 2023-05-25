@@ -1,568 +1,522 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Trello Clone App",
-    "description": "API for managing Trello resources",
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Card",
-      "description": "APIs related to Card objects"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Trello Clone App",
+        "description": "API for managing Trello resources",
+        "version": "1.0.0"
     },
-    {
-      "name": "List",
-      "description": "APIs related to List objects"
-    },
-    {
-      "name": "Order",
-      "description": "APIs related to Card and List orders"
-    }
-  ],
-  "paths": {
-    "/getCards": {
-      "get": {
-        "tags": [
-          "Card"
-        ],
-        "summary": "Retrieve array of Card",
-        "parameters": [
-          {
-            "name": "title",
-            "in": "query",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "description": "Filtering by Card's title"
-            }
-          },
-          {
-            "name": "listId",
-            "in": "query",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "description": "Filtering by List Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved cards",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Card"
-                  }
-                },
-                "example": [
-                  {
-                    "id": "card-123-456-789",
-                    "title": "Example Card",
-                    "listId": "567-890-123",
-                    "label": [
-                      {
-                        "name": "Example Label",
-                        "color": "#ff0000"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/createCard": {
-      "post": {
-        "tags": [
-          "Card"
-        ],
-        "summary": "Create a new List",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Card"
-              }
-            }
-          },
-          "required": true
+    "tags": [
+        {
+            "name": "Card",
+            "description": "APIs related to Card objects"
         },
-        "responses": {
-          "201": {
-            "description": "Successfully created List",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Card"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/updateCard/{id}": {
-      "put": {
-        "tags": [
-          "Card"
-        ],
-        "summary": "Update an existing Card",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfully updated Card",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Card"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/deleteCard/{id}": {
-      "delete": {
-        "tags": [
-          "Card"
-        ],
-        "summary": "Delete a Card by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successfully deleted Card"
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/getLists": {
-      "get": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Retrieve array of List",
-        "parameters": [
-          {
-            "name": "title",
-            "in": "query",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "description": "Filtering by List's title"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved Lists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/List"
-                  }
-                },
-                "example": [
-                  {
-                    "id": "list-123-456-789",
-                    "title": "Example List"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/createList": {
-      "post": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Create a new List",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/List"
-              }
-            }
-          },
-          "required": true
+        {
+            "name": "List",
+            "description": "APIs related to List objects"
         },
-        "responses": {
-          "201": {
-            "description": "Successfully created List",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/List"
-                }
-              }
-            }
-          }
+        {
+            "name": "Order",
+            "description": "APIs related to Card and List orders"
         }
-      }
-    },
-    "/updateList/{id}": {
-      "put": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Update an existing List",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successfully updated List",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/List"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+    ],
+    "servers": [
+        {
+            "description": "SwaggerHub API Auto Mocking",
+            "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0"
         }
-      }
-    },
-    "/deleteList/{id}": {
-      "delete": {
-        "tags": [
-          "List"
-        ],
-        "summary": "Delete a List by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successfully deleted List"
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+    ],
+    "paths": {
+        "/getCards": {
+            "get": {
+                "tags": ["Card"],
+                "summary": "Retrieve array of Card",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string",
+                            "description": "Filtering by Card's title"
+                        },
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "listId",
+                        "schema": {
+                            "type": "string",
+                            "description": "Filtering by List Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved cards",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Card"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "id": "card-123-456-789",
+                                        "title": "Example Card",
+                                        "listId": "567-890-123",
+                                        "label": [
+                                            {
+                                                "name": "Example Label",
+                                                "color": "#ff0000"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
-    "/getCardOrder": {
-      "get": {
-        "tags": [
-          "Order"
-        ],
-        "summary": "Retrieve order of Cards by List",
-        "parameters": [
-          {
-            "name": "listId",
-            "in": "query",
-            "required": true,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved CardOrder",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CardOrder"
+        },
+        "/createCard": {
+            "post": {
+                "tags": ["Card"],
+                "summary": "Create a new List",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Card"
+                            }
+                        }
+                    }
                 },
-                "example": [
-                  {
-                    "id": "cardOrder-123-456-789",
-                    "listId": "list-321-654-978",
-                    "orderedCardIds": [
-                      "card-123-456",
-                      "card-124-356",
-                      "card-132-465"
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                "responses": {
+                    "201": {
+                        "description": "Successfully created List",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
-    "/getListOrder": {
-      "get": {
-        "tags": [
-          "Order"
-        ],
-        "summary": "Retrieve order of Lists by Board",
-        "parameters": [
-          {
-            "name": "boardId",
-            "in": "query",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string"
+        },
+        "/updateCard/{id}": {
+            "put": {
+                "tags": ["Card"],
+                "summary": "Update an existing Card",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully updated Card",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved ListOrder",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListOrder"
+        },
+        "/deleteCard/{id}": {
+            "delete": {
+                "tags": ["Card"],
+                "summary": "Delete a Card by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted Card"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getLists": {
+            "get": {
+                "tags": ["List"],
+                "summary": "Retrieve array of List",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string",
+                            "description": "Filtering by List's title"
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved Lists",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/List"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "id": "list-123-456-789",
+                                        "title": "Example List"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/createList": {
+            "post": {
+                "tags": ["List"],
+                "summary": "Create a new List",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/List"
+                            }
+                        }
+                    }
                 },
-                "example": [
-                  {
-                    "id": "cardOrder-123-456-789",
-                    "boardId": "board-321-654-978",
-                    "orderedCardIds": [
-                      "list-123-456",
-                      "list-124-356",
-                      "list-132-465"
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                "responses": {
+                    "201": {
+                        "description": "Successfully created List",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/List"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
+        },
+        "/updateList/{id}": {
+            "put": {
+                "tags": ["List"],
+                "summary": "Update an existing List",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully updated List",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/List"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteList/{id}": {
+            "delete": {
+                "tags": ["List"],
+                "summary": "Delete a List by ID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted List"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getCardOrder": {
+            "get": {
+                "tags": ["Order"],
+                "summary": "Retrieve order of Cards by List",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "listId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved CardOrder",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardOrder"
+                                },
+                                "example": [
+                                    {
+                                        "id": "cardOrder-123-456-789",
+                                        "listId": "list-321-654-978",
+                                        "orderedCardIds": [
+                                            "card-123-456",
+                                            "card-124-356",
+                                            "card-132-465"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/getListOrder": {
+            "get": {
+                "tags": ["Order"],
+                "summary": "Retrieve order of Lists by Board",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "boardId",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved ListOrder",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListOrder"
+                                },
+                                "example": [
+                                    {
+                                        "id": "cardOrder-123-456-789",
+                                        "boardId": "board-321-654-978",
+                                        "orderedCardIds": [
+                                            "list-123-456",
+                                            "list-124-356",
+                                            "list-132-465"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
+    },
+    "components": {
+        "schemas": {
+            "Label": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "string",
+                        "description": "HEX code value for color"
+                    }
+                },
+                "required": ["id", "name", "color"]
+            },
+            "Card": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "listId": {
+                        "type": "string"
+                    },
+                    "labels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Label"
+                        }
+                    }
+                },
+                "required": ["id", "title", "listId"]
+            },
+            "List": {
+                "type": "object",
+                "required": ["id", "title"],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CardOrder": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "listId": {
+                        "type": "string"
+                    },
+                    "orderedCardIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "ListOrder": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "boardId": {
+                        "type": "string"
+                    },
+                    "orderedListIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "details": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                }
+            }
+        }
     }
-  },
-  "components": {
-    "schemas": {
-      "Label": {
-        "required": [
-          "color",
-          "id",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "color": {
-            "type": "string",
-            "description": "HEX code value for color"
-          }
-        }
-      },
-      "Card": {
-        "required": [
-          "id",
-          "listId",
-          "title"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "listId": {
-            "type": "string"
-          },
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Label"
-            }
-          }
-        }
-      },
-      "List": {
-        "required": [
-          "id",
-          "title"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          }
-        }
-      },
-      "CardOrder": {
-        "required": [
-          "id"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "listId": {
-            "type": "string"
-          },
-          "orderedCardIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "ListOrder": {
-        "required": [
-          "id"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "boardId": {
-            "type": "string"
-          },
-          "orderedListIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "error": {
-            "$ref": "#/components/schemas/Error_error"
-          },
-          "details": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        }
-      }
-    }
-  }
 }
