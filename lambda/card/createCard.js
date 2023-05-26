@@ -1,36 +1,40 @@
-/* global process */
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
-import { marshall } from "@aws-sdk/util-dynamodb"
+
+const REGION = 'ca-central-1';
+const TABLE_NAME = 'trello-card'
 
 // Create a DynamoDB document client
 const client = new DynamoDBClient({
-    region: process.env.AWS_DEFAULT_REGION
+    region: REGION
 });
-const TABLE_NAME = 'trello-card'
-const LIST_ID = '485dbda6-c4dc-4930-a90a-940c48317ccd'
 
-export const createCard = async () => {
-    // Define the properties of the card
+
+export const createCard = async (title, listId) => {
+    // Generate a unique ID for the card
+    const cardId = uuidv4();
+    // Create the DynamoDB item
     const card = {
-        id: uuidv4(),
-        title: 'test-title',
-        listId: LIST_ID,
+        id: { S: cardId },
+        title: { S: title },
+        listId: { S: listId }
     };
 
-    // Create the DynamoDB parameters for the put operation
+    // Create the DynamoDB parameters for the PutItem operation
     const params = {
-        TableName: TABLE_NAME, // Replace with the name of your DynamoDB table
-        Item: marshall(card)
+        TableName: TABLE_NAME,
+        Item: card
     };
 
     try {
+        // Create the PutItem command
         const command = new PutItemCommand(params);
-        const response = await client.send(command);
-        console.log("Card created successfully:", response);
+
+        // Send the command to DynamoDB
+        await client.send(command);
+
+        return { statusCode: 201, body: JSON.stringify('Card created!') };
     } catch (err) {
-        console.error("Unable to create card. Error:", err);
+        return { statusCode: 400, body: JSON.stringify('Unable to create card.') };
     }
 }
-
-createCard()
