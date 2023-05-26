@@ -14,7 +14,7 @@ export const createCard = async () => {
     // Define the properties of the card
     const card = {
         id: uuidv4(),
-        title: 'test-title-2',
+        title: 'test-title',
         listId: LIST_ID,
     };
 
