@@ -8,11 +8,11 @@ import NavBar from './routes/NavBar'
 
 const router = createBrowserRouter([
     {
-        path: '',
+        path: '/',
         element: <NavBar />,
         children: [{ path: '', element: <Board />, errorElement: <Error /> }],
     },
-    { path: ':listId/:cardId', element: <Card />, errorElement: <Error /> },
+    { path: '/:cardId', element: <Card />, errorElement: <Error /> },
 ])
 
 function App() {

@@ -1,12 +1,18 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Button } from '@mui/material'
-import React from 'react'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import TextField from '@mui/material/TextField'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 
 import CardDetails from '../components/cardDetails'
-import { setNewCard, updateList } from '../redux/listSlice'
+import { newCard, renameList, setNewCard, updateList } from '../redux/listSlice'
 
 const CardBox = styled.div`
     border: 1px solid black;
@@ -20,6 +26,16 @@ const CardBox = styled.div`
 export default function listDetails({ list, index }) {
     const dispatch = useDispatch()
     const { listBox } = useSelector((state) => state.list)
+    const [open, setOpen] = useState(false)
+    const [inputValue, setInputValue] = useState('')
+
+    const handleClickOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+    const inputSubmit = () => {
+        setOpen(false)
+        dispatch(renameList([inputValue, index]))
+    }
+
     const addNewCard = () => {
         const uniqueId = uuidv4()
         const newBox = {
@@ -27,6 +43,7 @@ export default function listDetails({ list, index }) {
             sequence: listBox[index].card.length + 1,
         }
         dispatch(setNewCard([newBox, index]))
+        dispatch(newCard({ id: uniqueId }))
     }
     const deleteList = () => {
         let deletedLists = listBox.filter((i) => i.id !== list.id)
@@ -35,11 +52,33 @@ export default function listDetails({ list, index }) {
     return (
         <div>
             <div style={{ display: 'flex' }}>
-                {list.name ? (
-                    <div>{list.name}</div>
-                ) : (
-                    <div>List {index + 1}</div>
-                )}
+                <Button variant="outlined" onClick={handleClickOpen}>
+                    {list.name ? (
+                        <div>{list.name}</div>
+                    ) : (
+                        <div>List {index + 1}</div>
+                    )}
+                </Button>
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Rename</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Give a name for the list:
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            fullWidth
+                            variant="standard"
+                            onChange={(e) => setInputValue(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={inputSubmit}>Confirm</Button>
+                    </DialogActions>
+                </Dialog>
                 <Button onClick={deleteList}>
                     <DeleteIcon />
                 </Button>
