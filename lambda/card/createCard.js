@@ -1,18 +1,16 @@
 /* global process */
-import { DynamoDBClient, ScanCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
 import { marshall } from "@aws-sdk/util-dynamodb"
 
 // Create a DynamoDB document client
 const client = new DynamoDBClient({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_DEFAULT_REGION
 });
 const TABLE_NAME = 'trello-card'
 const LIST_ID = '485dbda6-c4dc-4930-a90a-940c48317ccd'
 
-const createCard = async () => {
+export const createCard = async () => {
     // Define the properties of the card
     const card = {
         id: uuidv4(),

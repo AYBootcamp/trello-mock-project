@@ -9,7 +9,7 @@ const client = new DynamoDBClient({
     region: REGION
 });
 
-const createList = async (title) => {
+export const createList = async (title) => {
     // Generate a unique ID for the list
     const listId = uuidv4();
     // Create the DynamoDB item
