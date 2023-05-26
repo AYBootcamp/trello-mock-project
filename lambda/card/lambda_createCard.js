@@ -1,4 +1,5 @@
-import { createCard } from './createCard'
+import { createCard } from './createCard.mjs'
+
 export const handler = async (event) => {
     const { title, listId } = event;
 

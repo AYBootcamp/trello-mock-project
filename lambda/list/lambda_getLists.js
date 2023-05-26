@@ -1,7 +1,7 @@
-import { createList } from './createList'
+import { getLists } from './getLists.mjs'
 
 export const handler = async (event) => {
     const { title } = event;
 
-    return createList(title);
+    return getLists(title);
 };

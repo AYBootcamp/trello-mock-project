@@ -2,14 +2,14 @@ import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 const REGION = 'ca-central-1';
-const TABLE_NAME = 'trello-card';
+const TABLE_NAME = 'trello-list';
 
 const dynamodb = new DynamoDBClient({
     region: REGION,
 });
 
 
-export const getCards = async (substring, listId) => {
+export const getLists = async (substring) => {
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
@@ -20,21 +20,6 @@ export const getCards = async (substring, listId) => {
     if (substring) {
         params.FilterExpression = 'contains(title, :title)';
         params.ExpressionAttributeValues = marshall({ ':title': substring })
-    }
-
-    // Check if filtering by matching listId is requested
-    if (listId) {
-        // Update the filter expression and attribute values based on existing filter expressions
-        if (params.FilterExpression) {
-            params.FilterExpression += ' AND listId = :listId';
-        } else {
-            params.FilterExpression = 'listId = :listId';
-        }
-
-        params.ExpressionAttributeValues = {
-            ...params.ExpressionAttributeValues,
-            ...marshall({ ':listId': listId })
-        };
     }
 
     try {
@@ -81,4 +66,4 @@ const getRemainingItems = async (params) => {
     }
 };
 
-console.log(await getCards('test', 'test-list-id-123'));
+console.log(await getLists('test'));
