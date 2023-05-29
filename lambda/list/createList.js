@@ -31,9 +31,9 @@ export const createList = async (title) => {
         // Send the command to DynamoDB
         await client.send(command);
 
-        return { statusCode: 201, body: JSON.stringify('List created!') };
+        return { statusCode: 201, message: JSON.stringify('List created!'), data: list };
     } catch (err) {
-        return { statusCode: 400, body: JSON.stringify(`Unable to create list. ${err}`) };
+        return { statusCode: 400, message: JSON.stringify(`Unable to create list. ${err}`) };
     }
 }
 

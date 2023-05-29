@@ -36,10 +36,10 @@ export const updateList = async (id, updatedAttributes) => {
     try {
         const response = await docClient.send(updateItemCommand);
         console.log("Item updated successfully:", response);
-        return { statusCode: 202, body: JSON.stringify('List Updated!') };
+        return { statusCode: 202, message: JSON.stringify('List Updated!') };
     } catch (error) {
         console.error("Error updating item:", error);
-        return { statusCode: 400, body: JSON.stringify(`Unable to update List. ${error}`) };
+        return { statusCode: 400, message: JSON.stringify(`Unable to update List. ${error}`) };
     }
 };
 

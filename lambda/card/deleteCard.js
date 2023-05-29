@@ -21,10 +21,10 @@ export const deleteCardById = async (cardId) => {
     try {
         await docClient.send(command);
         console.log(`Card with ID ${cardId} deleted successfully.`);
-        return { statusCode: 202, body: JSON.stringify('Card deleted!') };
+        return { statusCode: 202, message: JSON.stringify('Card deleted!') };
     } catch (err) {
         console.error(`Error deleting card with ID ${cardId}:`, err);
-        return { statusCode: 400, body: JSON.stringify(`Unable to delete card. ${err}`) };
+        return { statusCode: 400, message: JSON.stringify(`Unable to delete card. ${err}`) };
     }
 };
 

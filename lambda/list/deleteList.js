@@ -21,10 +21,10 @@ export const deleteListById = async (id) => {
     try {
         await docClient.send(command);
         console.log(`List with ID ${id} deleted successfully.`);
-        return { statusCode: 202, body: JSON.stringify('List deleted!') };
+        return { statusCode: 202, message: JSON.stringify('List deleted!') };
     } catch (err) {
         console.error(`Error deleting List with ID ${id}:`, err);
-        return { statusCode: 400, body: JSON.stringify(`Unable to delete List. ${err}`) };
+        return { statusCode: 400, message: JSON.stringify(`Unable to delete List. ${err}`) };
     }
 };
 

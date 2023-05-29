@@ -34,11 +34,9 @@ export const getLists = async (substring) => {
             const remainingItems = await getRemainingItems(params);
             return items.concat(remainingItems);
         }
-
-        return items;
+        return { statusCode: 201, message: JSON.stringify('Lists returned!'), data: items };
     } catch (err) {
-        console.error('Error retrieving items from DynamoDB table:', err);
-        throw err;
+        return { statusCode: 400, message: JSON.stringify(`Error retrieving Lists from DynamoDB table. ${err}`) };
     }
 }
 

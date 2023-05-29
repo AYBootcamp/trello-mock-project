@@ -32,9 +32,10 @@ export const createCard = async (title, listId) => {
 
         // Send the command to DynamoDB
         await client.send(command);
-
-        return { statusCode: 201, body: JSON.stringify('Card created!') };
+        return { statusCode: 201, message: JSON.stringify('Card created!'), data: card };
     } catch (err) {
-        return { statusCode: 400, body: JSON.stringify('Unable to create card.') };
+        return { statusCode: 400, message: JSON.stringify('Unable to create card.') };
     }
 }
+
+// console.log(await createCard("test-title", "test-list-id"))

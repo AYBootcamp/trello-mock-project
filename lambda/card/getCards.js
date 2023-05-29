@@ -50,10 +50,9 @@ export const getCards = async (substring, listId) => {
             return items.concat(remainingItems);
         }
 
-        return items;
+        return { statusCode: 201, message: JSON.stringify('Cards returned!'), data: items };
     } catch (err) {
-        console.error('Error retrieving items from DynamoDB table:', err);
-        throw err;
+        return { statusCode: 400, message: JSON.stringify(`Error retrieving Cards from DynamoDB table. ${err}`) };
     }
 }
 
