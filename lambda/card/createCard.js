@@ -106,5 +106,4 @@ const addCardIdToCardOrderList = async (cardOrderId, cardId) => {
     }
 }
 
-// console.log(await createCard("test-title2", "c7209aaa-4e1b-4d00-880f-a61391a5f727"))
-// console.log(await (findCardOrderByListId('c7209aaa-4e1b-4d00-880f-a61391a5f727')))
+console.log(await createCard("test-card-2", "f86bb216-9f29-4f6b-aa6f-4351fe9eb22b"))
