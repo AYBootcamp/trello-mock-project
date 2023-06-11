@@ -17,12 +17,12 @@ const client = new DynamoDBClient({
     2. use listId to find the card order object
     3. add the card id to the end of card order's orderedCardIds array
 */
-export const createCard = async (title, listId) => {
+export const createCard = async (title, listId, boardId) => {
     // Generate a unique ID for the card
     const cardId = uuidv4();
 
     try {
-        const createCardResp = await createNewCardObject(cardId, title, listId)
+        const createCardResp = await createNewCardObject(cardId, title, listId, boardId)
         const cardOrder = await findCardOrderByListId(listId)
         await addCardIdToCardOrderList(cardOrder.id.S, cardId)
         return { statusCode: 201, message: JSON.stringify('Card created!'), data: createCardResp.data };
@@ -32,12 +32,13 @@ export const createCard = async (title, listId) => {
     }
 }
 
-const createNewCardObject = async (cardId, title, listId) => {
+const createNewCardObject = async (cardId, title, listId, boardId) => {
     // Create the DynamoDB item
     const card = {
         id: { S: cardId },
         title: { S: title },
-        listId: { S: listId }
+        listId: { S: listId },
+        boardId: { S: boardId }
     };
     // Create the DynamoDB parameters for the PutItem operation
     const params = {
@@ -106,4 +107,5 @@ const addCardIdToCardOrderList = async (cardOrderId, cardId) => {
     }
 }
 
-console.log(await createCard("test-card-2", "f86bb216-9f29-4f6b-aa6f-4351fe9eb22b"))
+// title, listId, boardId
+console.log(await createCard("zihe-card", "8e6cc3de-dd9f-4d6f-af72-f62c874f9883", "16bf7333-eac2-40e8-9a04-41ba99c042c0"))

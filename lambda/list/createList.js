@@ -133,4 +133,5 @@ const createNewCardOrder = async (listId) => {
     }
 }
 
-console.log(await createList('8fad4fae-7ca1-47b0-80e7-fe28d0db91fb', 'test-list-2'))
+// boardId, title
+console.log(await createList('8fad4fae-7ca1-47b0-80e7-fe28d0db91fb', 'test-list'))
