@@ -23,7 +23,7 @@ export const createList = async (boardId, title) => {
     const listId = uuidv4();
 
     try {
-        const createListResp = await createNewList(listId, title)
+        const createListResp = await createNewList(listId, title, boardId)
         await createNewCardOrder(listId)
         const listOrder = await findListOrderByBoardId(boardId)
         await addListIdToListOrderList(listOrder.id.S, listId)
@@ -84,11 +84,12 @@ const addListIdToListOrderList = async (listOrderId, listId) => {
 }
 
 
-const createNewList = async (listId, title) => {
+const createNewList = async (listId, title, boardId) => {
     // Create the DynamoDB item
     const list = {
         id: { S: listId },
         title: { S: title },
+        boardId: { S: boardId }
     };
 
     // Create the DynamoDB parameters for the PutItem operation
@@ -134,4 +135,4 @@ const createNewCardOrder = async (listId) => {
 }
 
 // boardId, title
-console.log(await createList('8fad4fae-7ca1-47b0-80e7-fe28d0db91fb', 'test-list'))
+console.log(await createList('16bf7333-eac2-40e8-9a04-41ba99c042c0', 'test-list'))

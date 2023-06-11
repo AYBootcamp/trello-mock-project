@@ -13,7 +13,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 /*
     1. Find the Card object using cardId
-    2. Find the CardOrderResp object using Card's listId
+    2. Find the CardOrder object using Card's listId
     3. Update the CardOrder object with cardId removed
     4. Remove the Card object
 */
@@ -34,9 +34,11 @@ export const deleteCardById = async (cardId) => {
 
         await updateCardOrder(cardOrderResp.id, newOrderList)
         await deleteCard(cardId)
+        return { statusCode: 202, message: JSON.stringify('Card deleted!') };
     }
     catch (e) {
         console.log(e)
+        return { statusCode: 400, message: JSON.stringify(`Unable to delete card. ${err}`) };
     }
 };
 

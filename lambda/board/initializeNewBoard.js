@@ -12,10 +12,10 @@ const client = new DynamoDBClient({
 
 export const initializeNewBoard = async (owner) => {
     const boardId = uuidv4();
-    let res = []
-    res.push(await createNewBoard(boardId, owner))
-    res.push(await createNewListOrder(boardId))
-    return res
+    const createBoardResp = await createNewBoard(boardId, owner)
+    console.log(createBoardResp)
+    const createListOrderResp = await createNewListOrder(boardId)
+    console.log(createListOrderResp)
 }
 
 
@@ -63,4 +63,4 @@ const createNewListOrder = async (boardId) => {
 }
 
 // Only execute this script when setting up a new board
-console.log(await (initializeNewBoard('Zihe')))
+console.log(await (initializeNewBoard('Alex')))
