@@ -5,6 +5,12 @@
         "description": "API for managing Trello resources",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0",
+            "description": "SwaggerHub API Auto Mocking"
+        }
+    ],
     "tags": [
         {
             "name": "Card",
@@ -19,12 +25,6 @@
             "description": "APIs related to Card and List orders"
         }
     ],
-    "servers": [
-        {
-            "description": "SwaggerHub API Auto Mocking",
-            "url": "https://virtserver.swaggerhub.com/SCCDMAOMAO_1/TrelloCloneAPI/1.0.0"
-        }
-    ],
     "paths": {
         "/getCards": {
             "get": {
@@ -32,17 +32,32 @@
                 "summary": "Retrieve array of Card",
                 "parameters": [
                     {
+                        "name": "boardId",
                         "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "explode": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "title",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string",
                             "description": "Filtering by Card's title"
-                        },
-                        "required": false
+                        }
                     },
                     {
-                        "in": "query",
                         "name": "listId",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string",
                             "description": "Filtering by List Id"
@@ -84,18 +99,18 @@
                 "tags": ["Card"],
                 "summary": "Create a new List",
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/Card"
                             }
                         }
-                    }
+                    },
+                    "required": true
                 },
                 "responses": {
                     "201": {
-                        "description": "Successfully created List",
+                        "description": "Successfully created Card",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -116,6 +131,8 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "style": "simple",
+                        "explode": false,
                         "schema": {
                             "type": "string"
                         }
@@ -154,6 +171,8 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "style": "simple",
+                        "explode": false,
                         "schema": {
                             "type": "string"
                         }
@@ -182,13 +201,15 @@
                 "summary": "Retrieve array of List",
                 "parameters": [
                     {
-                        "in": "query",
                         "name": "title",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string",
                             "description": "Filtering by List's title"
-                        },
-                        "required": false
+                        }
                     }
                 ],
                 "responses": {
@@ -219,14 +240,14 @@
                 "tags": ["List"],
                 "summary": "Create a new List",
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/List"
                             }
                         }
-                    }
+                    },
+                    "required": true
                 },
                 "responses": {
                     "201": {
@@ -251,6 +272,8 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "style": "simple",
+                        "explode": false,
                         "schema": {
                             "type": "string"
                         }
@@ -289,6 +312,8 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
+                        "style": "simple",
+                        "explode": false,
                         "schema": {
                             "type": "string"
                         }
@@ -317,12 +342,14 @@
                 "summary": "Retrieve order of Cards by List",
                 "parameters": [
                     {
-                        "in": "query",
                         "name": "listId",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "required": true
+                        }
                     }
                 ],
                 "responses": {
@@ -366,12 +393,14 @@
                 "summary": "Retrieve order of Lists by Board",
                 "parameters": [
                     {
-                        "in": "query",
                         "name": "boardId",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "required": false
+                        }
                     }
                 ],
                 "responses": {
@@ -413,6 +442,7 @@
     "components": {
         "schemas": {
             "Label": {
+                "required": ["color", "id", "name"],
                 "type": "object",
                 "properties": {
                     "id": {
@@ -425,13 +455,16 @@
                         "type": "string",
                         "description": "HEX code value for color"
                     }
-                },
-                "required": ["id", "name", "color"]
+                }
             },
             "Card": {
+                "required": ["boardId", "id", "listId", "title"],
                 "type": "object",
                 "properties": {
                     "id": {
+                        "type": "string"
+                    },
+                    "boardId": {
                         "type": "string"
                     },
                     "title": {
@@ -446,24 +479,26 @@
                             "$ref": "#/components/schemas/Label"
                         }
                     }
-                },
-                "required": ["id", "title", "listId"]
+                }
             },
             "List": {
+                "required": ["boardId", "id", "title"],
                 "type": "object",
-                "required": ["id", "title"],
                 "properties": {
                     "id": {
                         "type": "string"
                     },
                     "title": {
                         "type": "string"
+                    },
+                    "boardId": {
+                        "type": "string"
                     }
                 }
             },
             "CardOrder": {
-                "type": "object",
                 "required": ["id"],
+                "type": "object",
                 "properties": {
                     "id": {
                         "type": "string"
@@ -480,8 +515,8 @@
                 }
             },
             "ListOrder": {
-                "type": "object",
                 "required": ["id"],
+                "type": "object",
                 "properties": {
                     "id": {
                         "type": "string"
@@ -497,23 +532,38 @@
                     }
                 }
             },
+            "Board": {
+                "required": ["id"],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "type": "string"
+                    }
+                }
+            },
             "Error": {
                 "type": "object",
                 "properties": {
                     "error": {
-                        "type": "object",
-                        "properties": {
-                            "code": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        }
+                        "$ref": "#/components/schemas/Error_error"
                     },
                     "details": {
                         "type": "object",
                         "additionalProperties": true
+                    }
+                }
+            },
+            "Error_error": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
                     }
                 }
             }
