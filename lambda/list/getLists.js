@@ -9,17 +9,27 @@ const dynamodb = new DynamoDBClient({
 });
 
 
-export const getLists = async (substring) => {
+export const getLists = async (substring, boardId) => {
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
         ScanIndexForward: true // Optional sorting option (true for ascending, false for descending)
     };
 
+    if (!boardId) {
+        return { statusCode: 400, message: JSON.stringify(`Must provide boardId`) };
+    }
+
+    params.FilterExpression = 'boardId = :boardId'
+    params.ExpressionAttributeValues = marshall({ ':boardId': boardId })
+
     // Check if filtering by title substring is requested
     if (substring) {
-        params.FilterExpression = 'contains(title, :title)';
-        params.ExpressionAttributeValues = marshall({ ':title': substring })
+        params.FilterExpression += ' AND contains(title, :title)';
+        params.ExpressionAttributeValues = {
+            ...params.ExpressionAttributeValues,
+            ...marshall({ ':title': substring })
+        };
     }
 
     try {
@@ -64,4 +74,5 @@ const getRemainingItems = async (params) => {
     }
 };
 
-console.log(await getLists('test'));
+// substring, boardId
+console.log(await getLists(undefined, '26706d7e-5f09-492c-a2b7-c5e7c6f6af6e'));
