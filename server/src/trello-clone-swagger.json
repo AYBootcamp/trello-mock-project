@@ -80,6 +80,7 @@
                                         "id": "card-123-456-789",
                                         "title": "Example Card",
                                         "listId": "567-890-123",
+                                        "boardId": "board-123-123-123",
                                         "label": [
                                             {
                                                 "name": "Example Label",
@@ -102,7 +103,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Card"
+                                "$ref": "#/components/schemas/createCard_body"
                             }
                         }
                     },
@@ -122,17 +123,17 @@
                 }
             }
         },
-        "/updateCard/{id}": {
+        "/updateCard": {
             "put": {
                 "tags": ["Card"],
                 "summary": "Update an existing Card",
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true,
-                        "style": "simple",
-                        "explode": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
                         }
@@ -162,17 +163,17 @@
                 }
             }
         },
-        "/deleteCard/{id}": {
+        "/deleteCard": {
             "delete": {
                 "tags": ["Card"],
                 "summary": "Delete a Card by ID",
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true,
-                        "style": "simple",
-                        "explode": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
                         }
@@ -201,6 +202,16 @@
                 "summary": "Retrieve array of List",
                 "parameters": [
                     {
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "explode": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "title",
                         "in": "query",
                         "required": false,
@@ -226,7 +237,8 @@
                                 "example": [
                                     {
                                         "id": "list-123-456-789",
-                                        "title": "Example List"
+                                        "title": "Example List",
+                                        "boardId": "board-123-456-789"
                                     }
                                 ]
                             }
@@ -263,17 +275,17 @@
                 }
             }
         },
-        "/updateList/{id}": {
+        "/updateList": {
             "put": {
                 "tags": ["List"],
                 "summary": "Update an existing List",
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true,
-                        "style": "simple",
-                        "explode": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
                         }
@@ -303,17 +315,17 @@
                 }
             }
         },
-        "/deleteList/{id}": {
+        "/deleteList": {
             "delete": {
                 "tags": ["List"],
                 "summary": "Delete a List by ID",
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true,
-                        "style": "simple",
-                        "explode": false,
+                        "style": "form",
+                        "explode": true,
                         "schema": {
                             "type": "string"
                         }
@@ -553,6 +565,21 @@
                     "details": {
                         "type": "object",
                         "additionalProperties": true
+                    }
+                }
+            },
+            "createCard_body": {
+                "required": ["boardId", "listId", "title"],
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "listId": {
+                        "type": "string"
+                    },
+                    "boardId": {
+                        "type": "string"
                     }
                 }
             },

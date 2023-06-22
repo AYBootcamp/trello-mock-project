@@ -1,7 +1,7 @@
 import { getLists } from './getLists.mjs'
 
 export const handler = async (event) => {
-    const { title } = event;
+    const { title, boardId } = event;
 
-    return getLists(title);
+    return getLists(title, boardId);
 };
