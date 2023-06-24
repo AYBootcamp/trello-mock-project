@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import PageLayout from './components/PageLayout'
 import BoardView from './domain/BoardView'
+import Playground from './domain/Playground'
 import theme from './theme'
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
                     <BrowserRouter>
                         <Routes>
                             <Route index element={<BoardView />} />
+                            <Route path="playground" element={<Playground />} />
                         </Routes>
                     </BrowserRouter>
                 </PageLayout>
