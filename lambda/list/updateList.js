@@ -8,6 +8,13 @@ const docClient = DynamoDBDocumentClient.from(dynamoDBClient);
 
 // Update the item in the table
 export const updateList = async (id, updatedAttributes) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,PUT"
+    }
+
     const itemKey = {
         id: id,
     };
@@ -36,17 +43,29 @@ export const updateList = async (id, updatedAttributes) => {
     try {
         const response = await docClient.send(updateItemCommand);
         console.log("Item updated successfully:", response);
-        return { statusCode: 202, message: JSON.stringify('List Updated!') };
+        return {
+            headers,
+            statusCode: 202,
+            body: JSON.stringify({
+                message: JSON.stringify('List Updated!')
+            })
+        };
     } catch (error) {
         console.error("Error updating item:", error);
-        return { statusCode: 400, message: JSON.stringify(`Unable to update List. ${error}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Unable to update List. ${error}`)
+            })
+        };
     }
 };
 
-const id = "8c93aa19-1880-4138-892c-6ff7bbf0a630"
+// const id = "8c93aa19-1880-4138-892c-6ff7bbf0a630"
 
-const updatedAttributes = {
-    title: "Updated Title", // Replace with the updated title
-};
+// const updatedAttributes = {
+//     title: "Updated Title", // Replace with the updated title
+// };
 
-console.log(await updateList(id, updatedAttributes));
+// console.log(await updateList(id, updatedAttributes));

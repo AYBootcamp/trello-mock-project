@@ -8,6 +8,13 @@ const docClient = DynamoDBDocumentClient.from(dynamoDBClient);
 
 // Update the item in the table
 export const updateCard = async (id, updatedAttributes) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,PUT"
+    }
+
     const itemKey = {
         id: id,
     };
@@ -38,19 +45,29 @@ export const updateCard = async (id, updatedAttributes) => {
     try {
         const response = await docClient.send(updateItemCommand);
         console.log("Item updated successfully:", response);
-        return { statusCode: 202, message: JSON.stringify('Card Updated!') };
+        return {
+            headers,
+            statusCode: 202,
+            body: JSON.stringify({
+                message: JSON.stringify('Card Updated!')
+            })
+        };
     } catch (error) {
         console.error("Error updating item:", error);
-        return { statusCode: 400, message: JSON.stringify(`Unable to update card. ${error}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Unable to update card. ${error}`)
+            })
+        };
     }
 };
 
-const id = "1a484289-9f67-4099-8f72-db5907c03957"
+// const id = "5d45d34c-d63a-4693-b467-b679a8eaa064"
 
-const updatedAttributes = {
-    title: "Updated Title", // Replace with the updated title
-    listId: "Updated List ID", // Replace with the updated list ID
-    labels: [{ "id": "test-label-id-123", "name": "test-label", "color": "#000" }], // Replace with the updated label values
-};
+// const updatedAttributes = {
+//     title: "Updated Title", // Replace with the updated title
+// };
 
-console.log(await updateCard(id, updatedAttributes));
+// console.log(await updateCard(id, updatedAttributes));
