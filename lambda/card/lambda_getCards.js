@@ -1,6 +1,6 @@
 import { getCards } from './getCards.mjs'
 
 export const handler = async (event) => {
-    const { substring, listId } = event
-    return getCards(substring, listId)
+    const { substring, listId, boardId } = event.queryStringParameters
+    return getCards(substring, listId, boardId)
 };

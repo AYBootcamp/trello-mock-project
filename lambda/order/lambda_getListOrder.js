@@ -1,6 +1,6 @@
-import { getListOrder } from './getListOrder.js'
+import { getListOrder } from './getListOrder.mjs'
 
 export const handler = async (event) => {
-    const { boardId } = event
+    const { boardId } = event.queryStringParameters
     return getListOrder(boardId)
 };

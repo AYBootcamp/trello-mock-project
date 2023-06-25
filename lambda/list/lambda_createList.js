@@ -1,7 +1,8 @@
 import { createList } from './createList.mjs'
 
 export const handler = async (event) => {
-    const { title } = event;
+    const body = JSON.parse(event.body);
+    const { boardId, title } = body;
 
-    return createList(title);
+    return createList(boardId, title);
 };

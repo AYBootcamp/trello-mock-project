@@ -10,6 +10,13 @@ const dynamodb = new DynamoDBClient({
 
 
 export const getListOrder = async (boardId) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,GET"
+    }
+
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
@@ -35,9 +42,22 @@ export const getListOrder = async (boardId) => {
             return items.concat(remainingItems);
         }
 
-        return { statusCode: 201, message: JSON.stringify('ListOrder returned!'), data: items };
+        return {
+            headers,
+            statusCode: 201,
+            body: JSON.stringify({
+                message: JSON.stringify('ListOrder returned!'),
+                data: items
+            })
+        };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Error retrieving ListOrder from DynamoDB table. ${err}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Error retrieving ListOrder from DynamoDB table. ${err}`)
+            })
+        };
     }
 }
 
@@ -65,4 +85,5 @@ const getRemainingItems = async (params) => {
     }
 };
 
-console.log(await getListOrder('3b3f2ba8-4b33-418b-a47a-9963e4678179'));
+// boardId
+// console.log(await getListOrder('7128fdcf-c164-4494-8ba2-bf8097704eaf'));

@@ -18,15 +18,32 @@ const docClient = DynamoDBDocumentClient.from(client);
     4. Remove the Card object
 */
 export const deleteCardById = async (cardId) => {
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,DELETE"
+    }
     try {
         const card = await getCardById(cardId)
         if (!card) {
-            return { statusCode: 400, message: JSON.stringify(`Unable to find card with that id.`) };
+            return {
+                headers,
+                statusCode: 400,
+                body: JSON.stringify({
+                    message: JSON.stringify(`Unable to find card with that id.`)
+                })
+            };
         }
         const cardOrderResp = await findCardOrderByListId(card.listId)
 
         if (!cardOrderResp) {
-            return { statusCode: 400, message: JSON.stringify(`Unable to find card order with that id.`) };
+            return {
+                headers,
+                statusCode: 400,
+                body: JSON.stringify({
+                    message: JSON.stringify(`Unable to find card order with that id.`)
+                })
+            };
         }
 
         const orderedCardIds = cardOrderResp.orderedCardIds
@@ -34,11 +51,25 @@ export const deleteCardById = async (cardId) => {
 
         await updateCardOrder(cardOrderResp.id, newOrderList)
         await deleteCard(cardId)
-        return { statusCode: 202, message: JSON.stringify('Card deleted!') };
+        return {
+            headers,
+            statusCode: 202,
+            body: JSON.stringify({
+                message: JSON.stringify('Card deleted!')
+            })
+        };
     }
+
     catch (e) {
-        console.log(e)
-        return { statusCode: 400, message: JSON.stringify(`Unable to delete card. ${err}`) };
+        console.error('Error deleting Card', e)
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Unable to delete card.`),
+                error: e
+            })
+        };
     }
 };
 
@@ -63,7 +94,8 @@ const getCardById = async (cardId) => {
 
     }
     catch (e) {
-        return e
+        console.error('Error getting the card', e)
+        throw e
     }
 }
 
@@ -82,7 +114,7 @@ const deleteCard = async (cardId) => {
         return { statusCode: 202, message: JSON.stringify('Card deleted!') };
     } catch (err) {
         console.error(`Error deleting card with ID ${cardId}:`, err);
-        return { statusCode: 400, message: JSON.stringify(`Unable to delete card. ${err}`) };
+        throw err
     }
 }
 
@@ -133,8 +165,9 @@ const updateCardOrder = async (orderId, newOrderList) => {
         })
         .catch((error) => {
             console.error("Error updating item:", error);
+            throw error
         });
 }
 
 // card id
-console.log(await deleteCardById('89340522-bf89-4e93-a26f-57bd07810956'));
+// console.log(await deleteCardById('89340522-bf89-4e93-a26f-57bd07810956'));

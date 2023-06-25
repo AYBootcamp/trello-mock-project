@@ -20,11 +20,25 @@ const docClient = DynamoDBDocumentClient.from(client);
     4. Remove the List object
 */
 export const deleteListById = async (listId) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,DELETE"
+    }
+
     try {
         const list = await getListById(listId)
         if (!list) {
-            return { statusCode: 400, message: JSON.stringify(`Unable to find list with that id.`) };
+            return {
+                headers,
+                statusCode: 400,
+                body: JSON.stringify({
+                    message: 'Unable to find list with that id'
+                })
+            }
         }
+
         const listOrderResp = await findListOrderByBoardId(list.boardId)
 
         if (!listOrderResp) {
@@ -36,11 +50,24 @@ export const deleteListById = async (listId) => {
 
         await updateListOrder(listOrderResp.id, newOrderList)
         await deleteList(listId)
-        return { statusCode: 202, message: JSON.stringify('List deleted!') };
+        return {
+            headers,
+            statusCode: 202,
+            body: JSON.stringify({
+                message: JSON.stringify('List deleted!')
+            })
+        };
     }
     catch (e) {
         console.log(e)
-        return { statusCode: 400, message: JSON.stringify(`Unable to delete List. ${err}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Unable to delete List. ${e}`),
+                error: e
+            })
+        };
     }
 };
 
@@ -64,7 +91,8 @@ const getListById = async (listId) => {
         }
     }
     catch (e) {
-        return e
+        console.error("Error getting list by Id ", e)
+        throw e
     }
 }
 
@@ -115,6 +143,7 @@ const updateListOrder = async (orderId, newOrderList) => {
         })
         .catch((error) => {
             console.error("Error updating item:", error);
+            throw error
         });
 }
 
@@ -134,9 +163,9 @@ const deleteList = async (id) => {
         return { statusCode: 202, message: JSON.stringify('List deleted!') };
     } catch (err) {
         console.error(`Error deleting List with ID ${id}:`, err);
-        return { statusCode: 400, message: JSON.stringify(`Unable to delete List. ${err}`) };
+        throw err
     }
 }
 
 // list id
-console.log(await deleteListById('96e17aa2-59e0-4143-bfdd-9047b8495f07'));
+// console.log(await deleteListById('4cedf078-250d-4c2f-b1f5-dc395678cc6a'));

@@ -24,6 +24,7 @@ const MakeRequest: React.FC<MakeRequestProps> = ({ title, url, init }) => {
                     ...init,
                     headers: {
                         'X-API-KEY': apiKey,
+                        ...init?.headers,
                     },
                 })
             ).json()

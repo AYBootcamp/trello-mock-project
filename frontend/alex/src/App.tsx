@@ -18,15 +18,15 @@ const App = () => {
                 `}
             />
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <PageLayout>
-                    <BrowserRouter>
+                <BrowserRouter>
+                    <CssBaseline />
+                    <PageLayout>
                         <Routes>
                             <Route index element={<BoardView />} />
                             <Route path="playground" element={<Playground />} />
                         </Routes>
-                    </BrowserRouter>
-                </PageLayout>
+                    </PageLayout>
+                </BrowserRouter>
             </ThemeProvider>
         </>
     )

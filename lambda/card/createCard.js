@@ -18,6 +18,11 @@ const client = new DynamoDBClient({
     3. add the card id to the end of card order's orderedCardIds array
 */
 export const createCard = async (title, listId, boardId) => {
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST"
+    }
     // Generate a unique ID for the card
     const cardId = uuidv4();
 
@@ -25,10 +30,23 @@ export const createCard = async (title, listId, boardId) => {
         const createCardResp = await createNewCardObject(cardId, title, listId, boardId)
         const cardOrder = await findCardOrderByListId(listId)
         await addCardIdToCardOrderList(cardOrder.id.S, cardId)
-        return { statusCode: 201, message: JSON.stringify('Card created!'), data: createCardResp.data };
+        return {
+            headers,
+            statusCode: 201,
+            body: JSON.stringify({
+                message: JSON.stringify('Card created!'),
+                data: createCardResp.data
+            })
+        };
     }
     catch (err) {
-        return { statusCode: 400, message: JSON.stringify('Unable to create card.') };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify('Unable to create card.')
+            })
+        };
     }
 }
 
@@ -54,7 +72,8 @@ const createNewCardObject = async (cardId, title, listId, boardId) => {
         await client.send(command);
         return { statusCode: 201, message: JSON.stringify('Card created!'), data: card };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify('Unable to create card.') };
+        console.error('Error creating card')
+        throw err
     }
 }
 
@@ -108,4 +127,4 @@ const addCardIdToCardOrderList = async (cardOrderId, cardId) => {
 }
 
 // title, listId, boardId
-console.log(await createCard("zihe-card", "8e6cc3de-dd9f-4d6f-af72-f62c874f9883", "16bf7333-eac2-40e8-9a04-41ba99c042c0"))
+// console.log(await createCard("alex-card", "b0800e1e-9f18-4697-8855-4e5729c0aa79", "7128fdcf-c164-4494-8ba2-bf8097704eaf"))

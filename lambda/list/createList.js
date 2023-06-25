@@ -19,6 +19,12 @@ const client = new DynamoDBClient({
     3. add the list id to the end of list order's orderedListIds array
 */
 export const createList = async (boardId, title) => {
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST"
+    }
+
     // Generate a unique ID for the list
     const listId = uuidv4();
 
@@ -27,10 +33,22 @@ export const createList = async (boardId, title) => {
         await createNewCardOrder(listId)
         const listOrder = await findListOrderByBoardId(boardId)
         await addListIdToListOrderList(listOrder.id.S, listId)
-        return { statusCode: 201, message: JSON.stringify('List created!'), data: createListResp.data };
+        return {
+            statusCode: 201,
+            headers,
+            body: JSON.stringify({
+                message: JSON.stringify('List created!'),
+                data: createListResp.data
+            })
+        }
     }
     catch (err) {
-        return { statusCode: 400, message: JSON.stringify('Unable to create list.') };
+        return {
+            statusCode: 400, headers,
+            body: JSON.stringify(
+                { message: JSON.stringify('Unable to create list. '), error: err }
+            )
+        };
     }
 }
 
@@ -107,7 +125,8 @@ const createNewList = async (listId, title, boardId) => {
 
         return { statusCode: 201, message: JSON.stringify('List created!'), data: list };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Unable to create list. ${err}`) };
+        console.error("Error creating new list", err)
+        throw err
     }
 }
 
@@ -130,9 +149,10 @@ const createNewCardOrder = async (listId) => {
         await client.send(command);
         return { statusCode: 201, message: JSON.stringify('CardOrder created!'), data: cardOrder };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Unable to create CardOrder. ${err}`) };
+        console.error("Error creating new card order", err)
+        throw err
     }
 }
 
 // boardId, title
-console.log(await createList('16bf7333-eac2-40e8-9a04-41ba99c042c0', 'test-list'))
+// console.log(await createList('7128fdcf-c164-4494-8ba2-bf8097704eaf', 'test-list'))

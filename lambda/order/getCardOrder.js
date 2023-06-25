@@ -10,6 +10,13 @@ const dynamodb = new DynamoDBClient({
 
 
 export const getCardOrder = async (listId) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,GET"
+    }
+
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
@@ -35,9 +42,22 @@ export const getCardOrder = async (listId) => {
             return items.concat(remainingItems);
         }
 
-        return { statusCode: 201, message: JSON.stringify('CardOrder returned!'), data: items };
+        return {
+            headers,
+            statusCode: 201,
+            body: JSON.stringify({
+                message: JSON.stringify('CardOrder returned!'),
+                data: items
+            })
+        };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Error retrieving CardOrder from DynamoDB table. ${err}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Error retrieving CardOrder from DynamoDB table. ${err}`)
+            })
+        };
     }
 }
 
@@ -65,4 +85,5 @@ const getRemainingItems = async (params) => {
     }
 };
 
-console.log(await getCardOrder('3b3f2ba8-4b33-418b-a47a-9963e4678179'));
+// listId
+// console.log(await getCardOrder('b0800e1e-9f18-4697-8855-4e5729c0aa79'));

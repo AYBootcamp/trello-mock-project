@@ -10,6 +10,13 @@ const dynamodb = new DynamoDBClient({
 
 
 export const getCards = async (substring, listId, boardId) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,GET"
+    }
+
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
@@ -17,7 +24,13 @@ export const getCards = async (substring, listId, boardId) => {
     };
 
     if (!boardId) {
-        return { statusCode: 400, message: JSON.stringify(`Must provide boardId`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Must provide boardId`)
+            })
+        };
     }
 
     params.FilterExpression = 'boardId = :boardId'
@@ -55,9 +68,23 @@ export const getCards = async (substring, listId, boardId) => {
             return items.concat(remainingItems);
         }
 
-        return { statusCode: 201, message: JSON.stringify('Cards returned!'), data: items };
+        return {
+            headers,
+            statusCode: 201,
+            body: JSON.stringify({
+                message: JSON.stringify('Cards returned!'),
+                data: items
+            })
+        };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Error retrieving Cards from DynamoDB table. ${err}`) };
+        return {
+            headers,
+            statusCode: 400,
+            body: JSON.stringify({
+                message: JSON.stringify(`Error retrieving Cards from DynamoDB table.`),
+                error: JSON.stringify(err)
+            })
+        };
     }
 }
 
@@ -86,4 +113,4 @@ const getRemainingItems = async (params) => {
 };
 
 // substring, listId, boardId
-console.log(await getCards(undefined, undefined, '16bf7333-eac2-40e8-9a04-41ba99c042c0'));
+// console.log(await getCards(undefined, undefined, '16bf7333-eac2-40e8-9a04-41ba99c042c0'));

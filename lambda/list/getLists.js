@@ -10,6 +10,13 @@ const dynamodb = new DynamoDBClient({
 
 
 export const getLists = async (substring, boardId) => {
+
+    const headers = {
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,GET"
+    }
+
     // Define the scan parameters
     const params = {
         TableName: TABLE_NAME,
@@ -44,35 +51,46 @@ export const getLists = async (substring, boardId) => {
             const remainingItems = await getRemainingItems(params);
             return items.concat(remainingItems);
         }
-        return { statusCode: 201, message: JSON.stringify('Lists returned!'), data: items };
+        return {
+            statusCode: 201,
+            headers,
+            body: JSON.stringify({
+                message: JSON.stringify('Lists returned!'),
+                data: items
+            })
+        };
     } catch (err) {
-        return { statusCode: 400, message: JSON.stringify(`Error retrieving Lists from DynamoDB table. ${err}`) };
-    }
-}
-
-
-const getRemainingItems = async (params) => {
-    let items = [];
-
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-        try {
-            const command = new ScanCommand(params);
-            const response = await dynamodb.send(command);
-            const scannedItems = response.Items;
-
-            if (response.LastEvaluatedKey) {
-                params.ExclusiveStartKey = response.LastEvaluatedKey;
-                items = items.concat(scannedItems);
-            } else {
-                return items.concat(scannedItems);
+        return {
+            statusCode: 400, headers, body: JSON.stringify({
+                message: JSON.stringify(`Error retrieving Lists from DynamoDB table. ${err}`)
             }
-        } catch (err) {
-            console.error('Error retrieving remaining items from DynamoDB table:', err);
-            throw err;
+            )
         }
     }
-};
 
-// substring, boardId
-console.log(await getLists(undefined, '26706d7e-5f09-492c-a2b7-c5e7c6f6af6e'));
+
+    const getRemainingItems = async (params) => {
+        let items = [];
+
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            try {
+                const command = new ScanCommand(params);
+                const response = await dynamodb.send(command);
+                const scannedItems = response.Items;
+
+                if (response.LastEvaluatedKey) {
+                    params.ExclusiveStartKey = response.LastEvaluatedKey;
+                    items = items.concat(scannedItems);
+                } else {
+                    return items.concat(scannedItems);
+                }
+            } catch (err) {
+                console.error('Error retrieving remaining items from DynamoDB table:', err);
+                throw err;
+            }
+        }
+    };
+
+    // substring, boardId
+    console.log(await getLists(undefined, '26706d7e-5f09-492c-a2b7-c5e7c6f6af6e'));
