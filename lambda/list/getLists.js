@@ -1,5 +1,5 @@
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 const REGION = 'ca-central-1';
 const TABLE_NAME = 'trello-list';
@@ -51,12 +51,14 @@ export const getLists = async (substring, boardId) => {
             const remainingItems = await getRemainingItems(params);
             return items.concat(remainingItems);
         }
+        const unmarshalledItems = items.map(item => unmarshall(item));
+
         return {
             statusCode: 201,
             headers,
             body: JSON.stringify({
                 message: JSON.stringify('Lists returned!'),
-                data: items
+                data: unmarshalledItems
             })
         };
     } catch (err) {
@@ -67,30 +69,31 @@ export const getLists = async (substring, boardId) => {
             )
         }
     }
+}
 
+const getRemainingItems = async (params) => {
+    let items = [];
 
-    const getRemainingItems = async (params) => {
-        let items = [];
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        try {
+            const command = new ScanCommand(params);
+            const response = await dynamodb.send(command);
+            const scannedItems = response.Items;
 
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-            try {
-                const command = new ScanCommand(params);
-                const response = await dynamodb.send(command);
-                const scannedItems = response.Items;
-
-                if (response.LastEvaluatedKey) {
-                    params.ExclusiveStartKey = response.LastEvaluatedKey;
-                    items = items.concat(scannedItems);
-                } else {
-                    return items.concat(scannedItems);
-                }
-            } catch (err) {
-                console.error('Error retrieving remaining items from DynamoDB table:', err);
-                throw err;
+            if (response.LastEvaluatedKey) {
+                params.ExclusiveStartKey = response.LastEvaluatedKey;
+                items = items.concat(scannedItems);
+            } else {
+                return items.concat(scannedItems);
             }
+        } catch (err) {
+            console.error('Error retrieving remaining items from DynamoDB table:', err);
+            throw err;
         }
-    };
+    }
+};
 
-    // substring, boardId
-    console.log(await getLists(undefined, '26706d7e-5f09-492c-a2b7-c5e7c6f6af6e'));
+
+// substring, boardId
+console.log((await getLists(undefined, '7128fdcf-c164-4494-8ba2-bf8097704eaf')));

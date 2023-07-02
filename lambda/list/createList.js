@@ -1,5 +1,6 @@
 import { DynamoDBClient, PutItemCommand, QueryCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 const REGION = 'ca-central-1';
 const LIST_TABLE_NAME = 'trello-list'
@@ -38,7 +39,7 @@ export const createList = async (boardId, title) => {
             headers,
             body: JSON.stringify({
                 message: JSON.stringify('List created!'),
-                data: createListResp.data
+                data: unmarshall(createListResp.data)
             })
         }
     }
@@ -155,4 +156,4 @@ const createNewCardOrder = async (listId) => {
 }
 
 // boardId, title
-// console.log(await createList('7128fdcf-c164-4494-8ba2-bf8097704eaf', 'test-list'))
+console.log(await createList('7128fdcf-c164-4494-8ba2-bf8097704eaf', 'test-list'))

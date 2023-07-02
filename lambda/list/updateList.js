@@ -47,7 +47,7 @@ export const updateList = async (id, updatedAttributes) => {
             headers,
             statusCode: 202,
             body: JSON.stringify({
-                message: JSON.stringify('List Updated!')
+                message: JSON.stringify('List Updated!'),
             })
         };
     } catch (error) {

@@ -1,5 +1,6 @@
 import { DynamoDBClient, PutItemCommand, QueryCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { v4 as uuidv4 } from 'uuid'
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 const REGION = 'ca-central-1';
 const CARD_TABLE_NAME = 'trello-card'
@@ -35,7 +36,7 @@ export const createCard = async (title, listId, boardId) => {
             statusCode: 201,
             body: JSON.stringify({
                 message: JSON.stringify('Card created!'),
-                data: createCardResp.data
+                data: unmarshall(createCardResp.data)
             })
         };
     }

@@ -1,5 +1,5 @@
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 const REGION = 'ca-central-1';
 const TABLE_NAME = 'trello-card-order';
@@ -41,13 +41,14 @@ export const getCardOrder = async (listId) => {
             const remainingItems = await getRemainingItems(params);
             return items.concat(remainingItems);
         }
+        const unmarshalledItems = items.map(item => unmarshall(item));
 
         return {
             headers,
             statusCode: 201,
             body: JSON.stringify({
                 message: JSON.stringify('CardOrder returned!'),
-                data: items
+                data: unmarshalledItems
             })
         };
     } catch (err) {
