@@ -4,7 +4,7 @@ import { keyBy } from 'lodash'
 import { apiKey } from '../secrets'
 import { RootState } from './store'
 
-interface ListData {
+export interface ListData {
     boardId: string
     id: string
     title: string

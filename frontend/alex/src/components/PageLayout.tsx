@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles'
 import { useCallback, useEffect } from 'react'
 
+import { fetchCardByBoardId } from '../redux/cardSlice'
 import { useAppDispatch } from '../redux/hooks'
 import { fetchListByBoardId } from '../redux/listSlice'
 import { ALEX_BOARD_ID } from '../secrets'
@@ -19,7 +20,10 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch()
 
     const fetchData = useCallback(async () => {
-        await dispatch(fetchListByBoardId(ALEX_BOARD_ID))
+        await Promise.all([
+            dispatch(fetchListByBoardId(ALEX_BOARD_ID)),
+            dispatch(fetchCardByBoardId(ALEX_BOARD_ID)),
+        ])
     }, [dispatch])
 
     useEffect(() => {
