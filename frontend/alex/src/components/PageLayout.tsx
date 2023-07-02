@@ -1,4 +1,4 @@
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import { useCallback, useEffect } from 'react'
 
 import { useAppDispatch } from '../redux/hooks'
@@ -11,8 +11,11 @@ const FullScreenContainer = styled('div')(({ theme }) => ({
     height: '100vh',
 }))
 
+const ChildrenWrapper = styled('div')`
+    margin: 0 20px;
+`
+
 const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const theme = useTheme()
     const dispatch = useAppDispatch()
 
     const fetchData = useCallback(async () => {
@@ -26,7 +29,7 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
         <FullScreenContainer>
             <Navbar />
-            {children}
+            <ChildrenWrapper>{children}</ChildrenWrapper>
         </FullScreenContainer>
     )
 }

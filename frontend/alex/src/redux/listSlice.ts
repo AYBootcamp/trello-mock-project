@@ -1,13 +1,23 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { keyBy } from 'lodash'
 
 import { apiKey } from '../secrets'
+import { RootState } from './store'
+
+interface ListData {
+    boardId: string
+    id: string
+    title: string
+}
 
 export interface ListState {
-    value: number
+    isLoading: boolean
+    data: Record<ListData['id'], ListData>
 }
 
 const initialState: ListState = {
-    value: 0,
+    isLoading: false,
+    data: {},
 }
 
 export const listSlice = createSlice({
@@ -15,8 +25,18 @@ export const listSlice = createSlice({
     initialState,
     reducers: {},
     extraReducers: (builder) => {
+        builder.addCase(fetchListByBoardId.pending, (state, action) => {
+            state.isLoading = true
+        })
         builder.addCase(fetchListByBoardId.fulfilled, (state, { payload }) => {
-            console.log({ payload })
+            return {
+                ...state,
+                isLoading: false,
+                data: keyBy(payload.data, 'id') as Record<
+                    ListData['id'],
+                    ListData
+                >,
+            }
         })
         builder.addCase(fetchListByBoardId.rejected, (state, action) => {
             console.log('failed', { action })
@@ -44,6 +64,11 @@ export const fetchListByBoardId = createAsyncThunk(
         }
         return await response.json()
     }
+)
+
+export const isListLoading = createSelector(
+    (state: RootState) => state.list,
+    (state) => state.isLoading
 )
 
 // Action creators are generated for each case reducer function

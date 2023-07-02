@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 
-const apiKey = 'gVEC2aZKAP7VPs1LmgIRx5DY1hjfYevu1vZxxfIM'
+import { apiKey } from '../../secrets'
 
 const MakeRequestWrapper = styled('div')`
     border: 2px solid green;

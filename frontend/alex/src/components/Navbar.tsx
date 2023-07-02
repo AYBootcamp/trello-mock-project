@@ -27,12 +27,6 @@ const Navbar = () => {
     const location = useLocation()
     const navMenus = ['Workspace', 'Recent', 'Starred', 'Templates']
 
-    const BackButton = () => (
-        <Button>
-            <StyledLink to="/">Home</StyledLink>
-        </Button>
-    )
-
     const isPlayground = location.pathname.includes('/playground')
     return (
         <NavContainer>
@@ -46,7 +40,7 @@ const Navbar = () => {
             <EndMenuContainer>
                 <Button>
                     {isPlayground ? (
-                        <BackButton />
+                        <StyledLink to="/">Home</StyledLink>
                     ) : (
                         <StyledLink to="/playground">Playground</StyledLink>
                     )}
