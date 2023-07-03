@@ -2,6 +2,8 @@ import { createTheme } from '@mui/material'
 
 export const LIST_WIDTH = '250px'
 export const CardBackgroundColor = '#2c343a'
+export const CardHoverBackgroundColor = '#4d5b66'
+
 const theme = createTheme({
     palette: {
         mode: 'dark',

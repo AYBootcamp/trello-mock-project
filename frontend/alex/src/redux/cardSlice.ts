@@ -14,14 +14,14 @@ export interface CardData {
 
 export interface CardState {
     isLoading: boolean
-    isCreating: boolean
+    isCreating: ListData['id'] | null
     data: Record<CardData['id'], CardData>
     dataByListId: Record<ListData['id'], CardData[]>
 }
 
 const initialState: CardState = {
     isLoading: false,
-    isCreating: false,
+    isCreating: null,
     data: {},
     dataByListId: {},
 }
@@ -51,10 +51,10 @@ export const cardSlice = createSlice({
         builder.addCase(fetchCardByBoardId.rejected, (state, action) => {
             console.log('failed', { action })
         })
-        builder.addCase(createCard.pending, (state) => {
+        builder.addCase(createCard.pending, (state, action) => {
             return {
                 ...state,
-                isCreating: true,
+                isCreating: action.meta.arg.listId,
             }
         })
         builder.addCase(createCard.fulfilled, (state, { payload }) => {
@@ -67,7 +67,7 @@ export const cardSlice = createSlice({
             newDataByListId.push(data)
             return {
                 ...state,
-                isCreating: false,
+                isCreating: null,
                 data: {
                     ...state.data,
                     [data.id]: {
@@ -153,10 +153,8 @@ export const isCardLoading = createSelector(
     (state) => state.isLoading
 )
 
-export const isCardCreating = createSelector(
-    cardSelector,
-    (state) => state.isCreating
-)
+export const isCardCreating = (listId: ListData['id']) =>
+    createSelector(cardSelector, (state) => state.isCreating === listId)
 
 export const selectCardsByListId = (listId: ListData['id']) =>
     createSelector(cardSelector, (state) => state.dataByListId[listId] || [])

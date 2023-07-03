@@ -1,24 +1,53 @@
-import { Divider, IconButton, Typography } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import { Divider, IconButton, Paper, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { useState } from 'react'
 
 import { CardData } from '../redux/cardSlice'
-import { CardBackgroundColor } from '../theme'
+import { CardBackgroundColor, CardHoverBackgroundColor } from '../theme'
 
-const StyledCard = styled('div')(({ theme }) => ({
+const StyledCard = styled(Paper)(({ theme }) => ({
     backgroundColor: CardBackgroundColor,
     borderRadius: '10px',
-    padding: '10px',
     margin: '10px 0',
+    overflow: 'hidden',
+    '& :hover': {
+        cursor: 'pointer',
+        backgroundColor: CardHoverBackgroundColor,
+    },
 }))
+
+const TitleWrapper = styled('div')`
+    display: flex;
+    align-items: center;
+`
 
 interface TrelloCardProps {
     data: CardData
 }
 
 const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
+    const [isHover, setIsHover] = useState(false)
+
     return (
-        <StyledCard>
-            <Typography>{data.title}</Typography>
+        <StyledCard
+            onMouseEnter={() => {
+                setIsHover(true)
+            }}
+            onMouseLeave={() => {
+                setIsHover(false)
+            }}
+        >
+            <TitleWrapper>
+                <Typography sx={{ margin: '10px' }}>{data.title}</Typography>
+                {isHover && (
+                    <EditIcon
+                        fontSize="small"
+                        sx={{ marginLeft: 'auto', marginRight: '10px' }}
+                    />
+                )}
+            </TitleWrapper>
+
             {/* <Divider />
             other stuff */}
         </StyledCard>

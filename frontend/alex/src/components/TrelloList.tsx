@@ -44,7 +44,7 @@ const CardWrapper = styled('div')`
 const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
     const { title, id } = listData
     const cards = useAppSelector(selectCardsByListId(id))
-    const isCreating = useAppSelector(isCardCreating)
+    const isCreating = useAppSelector(isCardCreating(id))
 
     const renderCards = () => {
         if (cards.length > 0) {
