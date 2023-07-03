@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useLayoutEffect } from 'react'
 
+import { updateWidth, updateXOffset } from '../redux/appSlice'
 import { fetchCardByBoardId } from '../redux/cardSlice'
 import { useAppDispatch } from '../redux/hooks'
 import { fetchListByBoardId } from '../redux/listSlice'
@@ -12,9 +13,7 @@ const FullScreenContainer = styled('div')(({ theme }) => ({
     height: '100vh',
 }))
 
-const ChildrenWrapper = styled('div')`
-    margin: 0 20px;
-`
+const ChildrenWrapper = styled('div')``
 
 const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch()
@@ -29,6 +28,25 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     useEffect(() => {
         fetchData()
     }, [fetchData])
+
+    useLayoutEffect(() => {
+        const updateSize = () => {
+            dispatch(updateWidth(window.innerWidth))
+        }
+
+        const updateOffset = () => {
+            dispatch(updateXOffset(window.scrollX))
+        }
+
+        updateSize()
+        updateOffset()
+        window.addEventListener('resize', updateSize)
+        window.addEventListener('scroll', updateOffset)
+        return () => {
+            window.removeEventListener('resize', updateSize)
+            window.removeEventListener('scroll', updateOffset)
+        }
+    }, [dispatch])
 
     return (
         <FullScreenContainer>

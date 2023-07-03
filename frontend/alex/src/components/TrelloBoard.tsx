@@ -7,7 +7,13 @@ import TrelloList from './TrelloList'
 
 const ListContainer = styled('div')`
     display: flex;
-    margin: 10px;
+    margin: 10px 0;
+    & > :first-of-type {
+        margin-left: 20px;
+    }
+    & > :last-of-type {
+        margin-right: 20px;
+    }
 `
 
 const TrelloBoard = () => {

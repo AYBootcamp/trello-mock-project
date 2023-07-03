@@ -75,6 +75,7 @@ const AddCardButton: React.FC<AddCardButtonProps> = ({ listId }) => {
                         inputRef={titleInputRef}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        sx={{ marginBottom: '10px' }}
                     />
                     <Divider />
                     <AddCardButtonWrapper>

@@ -2,6 +2,7 @@ import { Button, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { Link, useLocation } from 'react-router-dom'
 
+import { useAppSelector } from '../redux/hooks'
 import NavDropdownMenu from './NavDropdownMenu'
 
 const NavContainer = styled(`div`)((props) => ({
@@ -23,13 +24,17 @@ const StyledLink = styled(Link)`
     color: #9fadbc;
 `
 
-const Navbar = () => {
+// interface NavbarProps {}
+
+const Navbar: React.FC = () => {
     const location = useLocation()
+    const xOffset = useAppSelector((state) => state.app.pageXOffset)
     const navMenus = ['Workspace', 'Recent', 'Starred', 'Templates']
 
     const isPlayground = location.pathname.includes('/playground')
+
     return (
-        <NavContainer>
+        <NavContainer style={{ width: `calc(100% + ${xOffset}px` }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                 Trello
             </Typography>

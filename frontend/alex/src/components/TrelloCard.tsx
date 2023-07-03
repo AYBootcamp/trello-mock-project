@@ -39,11 +39,16 @@ const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
             }}
         >
             <TitleWrapper>
-                <Typography sx={{ margin: '10px' }}>{data.title}</Typography>
+                <Typography sx={{ margin: '10px', width: '150px' }}>
+                    {data.title}
+                </Typography>
                 {isHover && (
                     <EditIcon
                         fontSize="small"
-                        sx={{ marginLeft: 'auto', marginRight: '10px' }}
+                        sx={{
+                            marginLeft: 'auto',
+                            marginRight: '10px',
+                        }}
                     />
                 )}
             </TitleWrapper>

@@ -24,6 +24,7 @@ const StyledList = styled(`div`)(({ theme }) => ({
     border: `1px solid ${theme.palette.background.paper}`,
     backgroundColor: `${theme.palette.background.paper}`,
     width: LIST_WIDTH,
+    minWidth: LIST_WIDTH,
     borderRadius: `10px`,
     color: '#c3ccd5 !important',
     height: '100%',
