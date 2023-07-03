@@ -1,16 +1,16 @@
 import { CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
-import TrelloList from '../components/TrelloList'
 import { useAppSelector } from '../redux/hooks'
 import { isListLoading } from '../redux/listSlice'
+import TrelloList from './TrelloList'
 
 const ListContainer = styled('div')`
     display: flex;
     margin: 10px;
 `
 
-const BoardView = () => {
+const TrelloBoard = () => {
     const isLoading = useAppSelector(isListLoading)
     const listData = useAppSelector((state) => state.list.data)
 
@@ -26,4 +26,4 @@ const BoardView = () => {
     return <ListContainer>{renderLists()}</ListContainer>
 }
 
-export default BoardView
+export default TrelloBoard

@@ -1,8 +1,13 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { Divider, IconButton, Typography } from '@mui/material'
+import {
+    CircularProgress,
+    Divider,
+    IconButton,
+    Typography,
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
 
-import { selectCardsByListId } from '../redux/cardSlice'
+import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
 import { useAppSelector } from '../redux/hooks'
 import { ListData } from '../redux/listSlice'
 import { LIST_WIDTH } from '../theme'
@@ -21,6 +26,7 @@ const StyledList = styled(`div`)(({ theme }) => ({
     width: LIST_WIDTH,
     borderRadius: `10px`,
     color: '#c3ccd5 !important',
+    height: '100%',
 }))
 
 const ListTitleWrapper = styled('div')`
@@ -38,12 +44,13 @@ const CardWrapper = styled('div')`
 const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
     const { title, id } = listData
     const cards = useAppSelector(selectCardsByListId(id))
+    const isCreating = useAppSelector(isCardCreating)
 
     const renderCards = () => {
         if (cards.length > 0) {
             return cards.map((card) => <TrelloCard key={card.id} data={card} />)
         }
-        return <AddCardButton listId={id} />
+        return null
     }
 
     return (
@@ -57,7 +64,11 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
                 </IconButton>
             </ListTitleWrapper>
             <Divider />
-            <CardWrapper>{renderCards()}</CardWrapper>
+            <CardWrapper>
+                {renderCards()}
+                {isCreating && <CircularProgress />}
+                <AddCardButton listId={id} />
+            </CardWrapper>
         </StyledList>
     )
 }

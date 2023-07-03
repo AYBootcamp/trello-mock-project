@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import PageLayout from './components/PageLayout'
-import BoardView from './domain/BoardView'
+import TrelloBoard from './components/TrelloBoard'
 import Playground from './domain/Playground'
 import { store } from './redux/store'
 import theme from './theme'
@@ -25,7 +25,7 @@ const App = () => {
                         <CssBaseline />
                         <PageLayout>
                             <Routes>
-                                <Route index element={<BoardView />} />
+                                <Route index element={<TrelloBoard />} />
                                 <Route
                                     path="playground"
                                     element={<Playground />}

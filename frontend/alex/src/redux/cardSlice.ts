@@ -14,12 +14,14 @@ export interface CardData {
 
 export interface CardState {
     isLoading: boolean
+    isCreating: boolean
     data: Record<CardData['id'], CardData>
     dataByListId: Record<ListData['id'], CardData[]>
 }
 
 const initialState: CardState = {
     isLoading: false,
+    isCreating: false,
     data: {},
     dataByListId: {},
 }
@@ -49,9 +51,39 @@ export const cardSlice = createSlice({
         builder.addCase(fetchCardByBoardId.rejected, (state, action) => {
             console.log('failed', { action })
         })
+        builder.addCase(createCard.pending, (state) => {
+            return {
+                ...state,
+                isCreating: true,
+            }
+        })
+        builder.addCase(createCard.fulfilled, (state, { payload }) => {
+            const { data }: { data: CardData } = payload
+
+            const newDataByListId = state.dataByListId[data.listId]
+                ? [...state.dataByListId[data.listId]]
+                : []
+
+            newDataByListId.push(data)
+            return {
+                ...state,
+                isCreating: false,
+                data: {
+                    ...state.data,
+                    [data.id]: {
+                        ...data,
+                    },
+                },
+                dataByListId: {
+                    ...state.dataByListId,
+                    [data.listId]: newDataByListId,
+                },
+            }
+        })
     },
 })
 
+// AsyncThunks
 export const fetchCardByBoardId = createAsyncThunk(
     'card/fetchCardByBoardId',
     async (boardId: string, thunkApi) => {
@@ -74,11 +106,56 @@ export const fetchCardByBoardId = createAsyncThunk(
     }
 )
 
+export const createCard = createAsyncThunk(
+    'card/createCard',
+    async (
+        {
+            listId,
+            boardId,
+            title,
+        }: {
+            listId: ListData['id']
+            boardId: string
+            title: string
+        },
+        thunkApi
+    ) => {
+        const createCardData = {
+            title,
+            listId,
+            boardId,
+        }
+
+        const response = await fetch(
+            'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/createCard',
+            {
+                method: 'POST',
+                headers: {
+                    'X-API-KEY': apiKey,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(createCardData),
+            }
+        )
+
+        if (response.status !== 201) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
+// Selectors
 const cardSelector = (state: RootState) => state.card
 
 export const isCardLoading = createSelector(
     cardSelector,
     (state) => state.isLoading
+)
+
+export const isCardCreating = createSelector(
+    cardSelector,
+    (state) => state.isCreating
 )
 
 export const selectCardsByListId = (listId: ListData['id']) =>
