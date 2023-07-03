@@ -1,5 +1,6 @@
 import { CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { useCallback } from 'react'
 
 import { useAppSelector } from '../redux/hooks'
 import { isListLoading } from '../redux/listSlice'
@@ -20,11 +21,11 @@ const TrelloBoard = () => {
     const isLoading = useAppSelector(isListLoading)
     const listData = useAppSelector((state) => state.list.data)
 
-    const renderLists = () => {
+    const renderLists = useCallback(() => {
         return Object.keys(listData).map((listId) => (
             <TrelloList key={listId} listData={listData[listId]} />
         ))
-    }
+    }, [listData])
 
     if (isLoading) {
         return <CircularProgress />

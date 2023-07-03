@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 
 import { CardData } from '../redux/cardSlice'
-import { CardBackgroundColor, CardHoverBackgroundColor } from '../theme'
+import { CardBackgroundColor, HoverBackgroundColor } from '../theme'
 
 const StyledCard = styled(Paper)(({ theme }) => ({
     backgroundColor: CardBackgroundColor,
@@ -13,7 +13,7 @@ const StyledCard = styled(Paper)(({ theme }) => ({
     overflow: 'hidden',
     '& :hover': {
         cursor: 'pointer',
-        backgroundColor: CardHoverBackgroundColor,
+        backgroundColor: HoverBackgroundColor,
     },
 }))
 
