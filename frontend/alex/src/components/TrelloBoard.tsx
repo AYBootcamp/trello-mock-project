@@ -1,9 +1,11 @@
-import { CircularProgress } from '@mui/material'
+import { Backdrop, CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useCallback } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { useAppSelector } from '../redux/hooks'
 import { isListLoading } from '../redux/listSlice'
+import TrelloCardEditor from './TrelloCardEditor'
 import TrelloList from './TrelloList'
 
 const ListContainer = styled('div')`
@@ -17,7 +19,12 @@ const ListContainer = styled('div')`
     }
 `
 
-const TrelloBoard = () => {
+interface TrelloBoardProps {
+    backdropComponent?: 'list' | 'card'
+}
+
+const TrelloBoard: React.FC<TrelloBoardProps> = ({ backdropComponent }) => {
+    const { cardId } = useParams()
     const isLoading = useAppSelector(isListLoading)
     const listData = useAppSelector((state) => state.list.data)
 
@@ -27,10 +34,30 @@ const TrelloBoard = () => {
         ))
     }, [listData])
 
+    const renderBackdropComponent = () => {
+        let content: React.ReactNode
+        switch (backdropComponent) {
+            case 'card': {
+                content = <TrelloCardEditor cardId={cardId ?? ''} />
+                break
+            }
+            case 'list': {
+                break
+            }
+        }
+
+        return <Backdrop open>{content}</Backdrop>
+    }
+
     if (isLoading) {
         return <CircularProgress />
     }
-    return <ListContainer>{renderLists()}</ListContainer>
+    return (
+        <>
+            <ListContainer>{renderLists()}</ListContainer>
+            {backdropComponent && renderBackdropComponent()}
+        </>
+    )
 }
 
 export default TrelloBoard

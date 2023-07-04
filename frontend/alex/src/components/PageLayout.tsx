@@ -1,10 +1,17 @@
+import { CircularProgress } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useCallback, useEffect, useLayoutEffect } from 'react'
 
 import { updateWidth, updateXOffset } from '../redux/appSlice'
-import { fetchCardByBoardId } from '../redux/cardSlice'
-import { useAppDispatch } from '../redux/hooks'
-import { fetchListByBoardId } from '../redux/listSlice'
+import {
+    fetchCardByBoardId,
+    isCardLoading as isCardLoadingSelector,
+} from '../redux/cardSlice'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import {
+    fetchListByBoardId,
+    isListLoading as isListLoadingSelector,
+} from '../redux/listSlice'
 import { ALEX_BOARD_ID } from '../secrets'
 import Navbar from './Navbar'
 
@@ -17,6 +24,9 @@ const ChildrenWrapper = styled('div')``
 
 const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch()
+    const isCardLoading = useAppSelector(isCardLoadingSelector)
+    const isListLoading = useAppSelector(isListLoadingSelector)
+    const isDataLoading = isCardLoading || isListLoading
 
     const fetchData = useCallback(async () => {
         await Promise.all([
@@ -51,7 +61,9 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
         <FullScreenContainer>
             <Navbar />
-            <ChildrenWrapper>{children}</ChildrenWrapper>
+            <ChildrenWrapper>
+                {isDataLoading ? <CircularProgress /> : children}
+            </ChildrenWrapper>
         </FullScreenContainer>
     )
 }

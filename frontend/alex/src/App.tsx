@@ -27,6 +27,12 @@ const App = () => {
                             <Routes>
                                 <Route index element={<TrelloBoard />} />
                                 <Route
+                                    path="card/:cardId"
+                                    element={
+                                        <TrelloBoard backdropComponent="card" />
+                                    }
+                                />
+                                <Route
                                     path="playground"
                                     element={<Playground />}
                                 />

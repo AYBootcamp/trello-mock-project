@@ -1,7 +1,8 @@
 import EditIcon from '@mui/icons-material/Edit'
-import { Divider, IconButton, Paper, Typography } from '@mui/material'
+import { Paper, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { CardData } from '../redux/cardSlice'
 import { CardBackgroundColor, HoverBackgroundColor } from '../theme'
@@ -28,6 +29,7 @@ interface TrelloCardProps {
 
 const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
     const [isHover, setIsHover] = useState(false)
+    const navigate = useNavigate()
 
     return (
         <StyledCard
@@ -36,6 +38,9 @@ const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
             }}
             onMouseLeave={() => {
                 setIsHover(false)
+            }}
+            onClick={() => {
+                navigate(`/card/${data.id}`)
             }}
         >
             <TitleWrapper>
@@ -52,7 +57,6 @@ const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
                     />
                 )}
             </TitleWrapper>
-
             {/* <Divider />
             other stuff */}
         </StyledCard>

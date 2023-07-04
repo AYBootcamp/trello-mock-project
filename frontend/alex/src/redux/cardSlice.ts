@@ -20,7 +20,7 @@ export interface CardState {
 }
 
 const initialState: CardState = {
-    isLoading: false,
+    isLoading: true,
     isCreating: null,
     data: {},
     dataByListId: {},
@@ -159,6 +159,8 @@ export const isCardCreating = (listId: ListData['id']) =>
 export const selectCardsByListId = (listId: ListData['id']) =>
     createSelector(cardSelector, (state) => state.dataByListId[listId] || [])
 
+export const selectCardByCardId = (cardId: CardData['id']) =>
+    createSelector(cardSelector, (state) => state.data[cardId])
 // Action creators are generated for each case reducer function
 // export const {} = cardSlice.actions
 

@@ -18,6 +18,7 @@ const docClient = DynamoDBDocumentClient.from(client);
     2. Find the ListOrder object using List's boardId
     3. Update the ListOrder object with listId removed
     4. Remove the List object
+    5. Delete Cards belong to the List
 */
 export const deleteListById = async (listId) => {
 

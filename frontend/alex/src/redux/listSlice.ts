@@ -17,7 +17,7 @@ export interface ListState {
 }
 
 const initialState: ListState = {
-    isLoading: false,
+    isLoading: true,
     isUpdating: null,
     data: {},
 }
