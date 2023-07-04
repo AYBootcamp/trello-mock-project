@@ -2,6 +2,7 @@ import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import {
     Button,
+    ClickAwayListener,
     Divider,
     IconButton,
     TextField,
@@ -110,7 +111,15 @@ const AddCardButton: React.FC<AddCardButtonProps> = ({ listId }) => {
         )
     }
 
-    return <Wrapper>{renderContent()}</Wrapper>
+    return (
+        <ClickAwayListener
+            onClickAway={() => {
+                toggleCreateMode(false)
+            }}
+        >
+            <Wrapper>{renderContent()}</Wrapper>
+        </ClickAwayListener>
+    )
 }
 
 export default AddCardButton

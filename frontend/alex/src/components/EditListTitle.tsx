@@ -1,4 +1,11 @@
-import { Box, CircularProgress, Input } from '@mui/material'
+import CheckIcon from '@mui/icons-material/Check'
+import {
+    Box,
+    CircularProgress,
+    ClickAwayListener,
+    Input,
+    InputAdornment,
+} from '@mui/material'
 import { useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -19,6 +26,12 @@ const EditListTitle: React.FC<EditListTitleProps> = ({
     const dispatch = useAppDispatch()
     const isUpdating = useAppSelector(isListUpdating(listId))
 
+    const onClick = () => {
+        if (newTitle !== oldTitle) {
+            onSubmit()
+        }
+    }
+
     const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
         if (e.key === 'Enter') {
             onSubmit()
@@ -36,22 +49,30 @@ const EditListTitle: React.FC<EditListTitleProps> = ({
     }
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {isUpdating ? (
-                <CircularProgress />
-            ) : (
-                <Input
-                    size="small"
-                    autoFocus
-                    value={newTitle}
-                    onChange={(e) => {
-                        setNewTitle(e.target.value)
-                    }}
-                    onKeyDown={onKeyDown}
-                    onBlur={onBlur}
-                />
-            )}
-        </Box>
+        <ClickAwayListener onClickAway={onBlur}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {isUpdating ? (
+                    <CircularProgress />
+                ) : (
+                    <>
+                        <Input
+                            size="small"
+                            autoFocus
+                            value={newTitle}
+                            onChange={(e) => {
+                                setNewTitle(e.target.value)
+                            }}
+                            onKeyDown={onKeyDown}
+                            endAdornment={
+                                <InputAdornment position="start">
+                                    <CheckIcon onClick={onClick} />
+                                </InputAdornment>
+                            }
+                        />
+                    </>
+                )}
+            </Box>
+        </ClickAwayListener>
     )
 }
 

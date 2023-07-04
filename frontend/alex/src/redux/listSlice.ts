@@ -53,6 +53,7 @@ export const listSlice = createSlice({
                 ...originalList,
                 title: action.meta.arg.title,
             }
+
             return {
                 ...state,
                 isUpdating: null,
