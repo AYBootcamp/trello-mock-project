@@ -10,6 +10,7 @@ export interface CardData {
     id: string
     listId: ListData['id']
     title: string
+    description?: string
 }
 
 export interface CardState {

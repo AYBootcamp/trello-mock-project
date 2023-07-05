@@ -63,9 +63,22 @@ export const listSlice = createSlice({
                 },
             }
         })
+        builder.addCase(deleteList.pending, (state, action) => {
+            state.isLoading = true
+        })
+        builder.addCase(deleteList.rejected, (state) => {
+            state.isLoading = false
+        })
+        builder.addCase(deleteList.fulfilled, (state, action) => {
+            state.isLoading = false
+            const listId = action.meta.arg
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete state.data[listId]
+        })
     },
 })
 
+// AsyncThunks
 export const fetchListByBoardId = createAsyncThunk(
     'list/fetchListByBoardId',
     async (boardId: string, thunkApi) => {
@@ -116,6 +129,30 @@ export const updateList = createAsyncThunk(
     }
 )
 
+export const deleteList = createAsyncThunk(
+    'list/deleteList',
+    async (listId: ListData['id'], thunkApi) => {
+        const deleteListParams = new URLSearchParams({
+            id: listId,
+        })
+
+        const response = await fetch(
+            `https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/deleteList?${deleteListParams.toString()}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'X-API-KEY': apiKey,
+                },
+            }
+        )
+        if (response.status !== 202) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
+// Selectors
 export const isListLoading = createSelector(
     (state: RootState) => state.list,
     (state) => state.isLoading

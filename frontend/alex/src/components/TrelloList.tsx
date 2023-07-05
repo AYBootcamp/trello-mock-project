@@ -1,16 +1,18 @@
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import {
     CircularProgress,
     Divider,
     IconButton,
+    Popover,
     Typography,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 
 import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
-import { useAppSelector } from '../redux/hooks'
-import { ListData } from '../redux/listSlice'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { deleteList, ListData } from '../redux/listSlice'
 import { HoverBackgroundColor, LIST_WIDTH } from '../theme'
 import AddCardButton from './AddCardButton'
 import EditListTitle from './EditListTitle'
@@ -56,10 +58,20 @@ interface TrelloListProps {
     listData: ListData
 }
 const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
     const { title, id } = listData
     const [isEditingTitle, setIsEditingTitle] = useState(false)
     const cards = useAppSelector(selectCardsByListId(id))
     const isCreating = useAppSelector(isCardCreating(id))
+    const dispatch = useAppDispatch()
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
 
     const renderCards = () => {
         if (cards.length > 0) {
@@ -67,7 +79,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
         }
         return null
     }
-
+    const open = Boolean(anchorEl)
     return (
         <StyledList isEditing={isEditingTitle}>
             <ListTitleWrapper>
@@ -86,9 +98,28 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
                     </TitleText>
                 )}
 
-                <IconButton size="small">
+                <IconButton size="small" onClick={handleClick}>
                     <MoreHorizIcon />
                 </IconButton>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                >
+                    <IconButton
+                        size="small"
+                        onClick={() => {
+                            dispatch(deleteList(id))
+                        }}
+                    >
+                        <DeleteForeverIcon />
+                    </IconButton>
+                </Popover>
             </ListTitleWrapper>
             <Divider />
             <CardWrapper>

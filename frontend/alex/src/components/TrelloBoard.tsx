@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { useAppSelector } from '../redux/hooks'
 import { isListLoading } from '../redux/listSlice'
-import TrelloCardEditor from './TrelloCardEditor'
+import TrelloCardDetailView from './TrelloCardDetailView'
 import TrelloList from './TrelloList'
 
 const ListContainer = styled('div')`
@@ -20,10 +20,10 @@ const ListContainer = styled('div')`
 `
 
 interface TrelloBoardProps {
-    backdropComponent?: 'list' | 'card'
+    detailView?: 'card'
 }
 
-const TrelloBoard: React.FC<TrelloBoardProps> = ({ backdropComponent }) => {
+const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     const { cardId } = useParams()
     const isLoading = useAppSelector(isListLoading)
     const listData = useAppSelector((state) => state.list.data)
@@ -34,19 +34,12 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ backdropComponent }) => {
         ))
     }, [listData])
 
-    const renderBackdropComponent = () => {
-        let content: React.ReactNode
-        switch (backdropComponent) {
-            case 'card': {
-                content = <TrelloCardEditor cardId={cardId ?? ''} />
-                break
-            }
-            case 'list': {
-                break
-            }
-        }
-
-        return <Backdrop open>{content}</Backdrop>
+    const renderDetailViewComponent = () => {
+        return (
+            <Backdrop open>
+                <TrelloCardDetailView cardId={cardId ?? ''} />
+            </Backdrop>
+        )
     }
 
     if (isLoading) {
@@ -55,7 +48,7 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ backdropComponent }) => {
     return (
         <>
             <ListContainer>{renderLists()}</ListContainer>
-            {backdropComponent && renderBackdropComponent()}
+            {detailView && renderDetailViewComponent()}
         </>
     )
 }
