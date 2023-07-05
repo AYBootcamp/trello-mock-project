@@ -38,6 +38,7 @@ export const updateCard = async (id, updatedAttributes) => {
             ...(updatedAttributes.title ? { "#title": "title" } : {}),
             ...(updatedAttributes.listId ? { "#listId": "listId" } : {}),
             ...(updatedAttributes.labels ? { "#labels": "labels" } : {}),
+            ...(updatedAttributes.description ? { "#description": "description" } : {}),
         },
         ExpressionAttributeValues: expressionAttributeValues,
     });
@@ -64,10 +65,10 @@ export const updateCard = async (id, updatedAttributes) => {
     }
 };
 
-// const id = "5d45d34c-d63a-4693-b467-b679a8eaa064"
+const id = "26fb6ad7-7a59-4cae-921f-a9b2b09145cb"
 
-// const updatedAttributes = {
-//     title: "Updated Title", // Replace with the updated title
-// };
+const updatedAttributes = {
+    title: "Updated Title - mmm", // Replace with the updated title
+};
 
-// console.log(await updateCard(id, updatedAttributes));
+console.log(await updateCard(id, updatedAttributes));
