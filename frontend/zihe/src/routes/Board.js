@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import ListDetails from '../components/listDetails'
 
-const AllLists = styled.div`
+const AllListsStyle = styled.div`
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-end;
 `
-const ListBox = styled.div`
+const SingleList = styled.div`
     border: 1px solid black;
     background-color: lavender;
     flex-basis: 300px;
@@ -20,17 +20,18 @@ const ListBox = styled.div`
     border-radius: 10px;
     height: 100%;
 `
+
 export default function Board() {
-    const { listBox } = useSelector((state) => state.list)
+    const { allLists } = useSelector((state) => state.list)
     return (
         <div>
-            <AllLists>
-                {listBox.map((list, index) => (
-                    <ListBox key={list.id}>
+            <AllListsStyle>
+                {allLists.map((list, index) => (
+                    <SingleList key={list.id}>
                         <ListDetails list={list} index={index} />
-                    </ListBox>
+                    </SingleList>
                 ))}
-            </AllLists>
+            </AllListsStyle>
         </div>
     )
 }

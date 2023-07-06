@@ -1,38 +1,66 @@
-import InfoIcon from '@mui/icons-material/Info'
-import RemoveIcon from '@mui/icons-material/Remove'
-import { Button } from '@mui/material'
-import React from 'react'
+import { TextField, Typography } from '@mui/material'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 
-import { deleteCard, setCurrentCard } from '../redux/listSlice'
+import { updateCard } from '../redux/listSlice'
 
-export default function cardDetails({ card, index }) {
-    const { cardBox } = useSelector((state) => state.list)
-    const findCard = cardBox.filter((item) => item.id === card.id)[0]
+export default function cardDetails() {
+    const { currentCard } = useSelector((state) => state.list)
     const dispatch = useDispatch()
-    const deleteACard = () => {
-        dispatch(deleteCard(card.id))
+    const [descriptionIsEditing, setDescriptionIsEditing] = useState(false)
+    const [description, setDescription] = useState(currentCard.description)
+
+    const updateCardDetails = () => {
+        const cardDetails = {
+            description: description,
+        }
+        dispatch(updateCard({ id: currentCard.id, newInfo: cardDetails }))
     }
+
     return (
         <div>
-            <div style={{ display: 'flex', position: 'relative' }}>
-                {findCard.name ? (
-                    <div>{findCard.name}</div>
-                ) : (
-                    <div>Card {index + 1}</div>
-                )}
-                <Button onClick={deleteACard}>
-                    <RemoveIcon color="secondary" />
-                </Button>
-                <Button
-                    style={{ position: 'absolute', right: '1px' }}
-                    onClick={() => dispatch(setCurrentCard(card.id))}
-                >
-                    <Link to={card.id}>
-                        <InfoIcon color="secondary" />
-                    </Link>
-                </Button>
+            <div>
+                <h3>Description:</h3>
+                <div>
+                    {currentCard.description ? (
+                        descriptionIsEditing ? (
+                            <TextField
+                                autoFocus
+                                value={description}
+                                onChange={(e) => {
+                                    setDescription(e.target.value)
+                                }}
+                                onBlur={() => {
+                                    setDescriptionIsEditing(false),
+                                        updateCardDetails()
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        setDescriptionIsEditing(false),
+                                            updateCardDetails()
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <Typography
+                                onDoubleClick={() =>
+                                    setDescriptionIsEditing(true)
+                                }
+                            >
+                                {description}
+                            </Typography>
+                        )
+                    ) : (
+                        <TextField
+                            multiline
+                            row={5}
+                            onChange={(e) => {
+                                setDescription(e.target.value)
+                            }}
+                            onBlur={() => updateCardDetails()}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     )

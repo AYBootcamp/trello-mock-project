@@ -1,11 +1,14 @@
 import AddIcon from '@mui/icons-material/Add'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import FilterListIcon from '@mui/icons-material/FilterList'
+import SearchIcon from '@mui/icons-material/Search'
+import { Input } from '@mui/material'
+import Button from '@mui/material/Button'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
 
-import { setNewBox } from '../redux/listSlice'
+import { createList } from '../redux/listSlice'
 
 const BackGround = styled.div`
     background-color: lavenderblush;
@@ -17,37 +20,33 @@ const BackGround = styled.div`
         margin: 10px;
     }
 `
-
-export default function Navigation() {
+export default function navigation() {
     const dispatch = useDispatch()
-    const { listBox } = useSelector((state) => state.list)
     const addNewList = () => {
-        const uniqueId = uuidv4()
-        const newBox = {
-            id: uniqueId,
-            sequence: listBox.length + 1,
-            card: [],
-        }
-        dispatch(setNewBox(newBox))
+        dispatch(createList())
     }
-
     return (
         <BackGround>
-            <div>Trello</div>
             <div>
-                <button onClick={addNewList}>
+                <DashboardIcon color="secondary" />
+                Trello
+            </div>
+            <div>
+                <Button color="secondary" onClick={addNewList}>
                     <AddIcon />
-                </button>
+                </Button>
                 New List
             </div>
             <div>
-                <input />
-                <button>Search</button>
+                <Input />
+                <Button color="secondary">
+                    <SearchIcon />
+                </Button>
             </div>
             <div>
-                <button>
+                <Button color="secondary">
                     <FilterListIcon />
-                </button>
+                </Button>
                 Filter
             </div>
         </BackGround>

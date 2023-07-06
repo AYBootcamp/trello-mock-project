@@ -9,14 +9,13 @@ import TextField from '@mui/material/TextField'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
 
-import CardDetails from '../components/cardDetails'
-import { newCard, renameList, setNewCard, updateList } from '../redux/listSlice'
+import { createCard, deleteList, updateListTitle } from '../redux/listSlice'
+import CardsInList from './cardsInList'
 
 const CardBox = styled.div`
     border: 1px solid black;
-    background-color: rosybrown;
+    background-color: lavenderblush;
     margin: 5px;
     padding: 3px;
     border-radius: 5px;
@@ -25,39 +24,30 @@ const CardBox = styled.div`
 `
 export default function listDetails({ list, index }) {
     const dispatch = useDispatch()
-    const { listBox } = useSelector((state) => state.list)
+    const { allCards } = useSelector((state) => state.list)
     const [open, setOpen] = useState(false)
     const [inputValue, setInputValue] = useState('')
-
     const handleClickOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
     const inputSubmit = () => {
+        dispatch(updateListTitle({ id: list.id, newTitle: inputValue }))
         setOpen(false)
-        dispatch(renameList([inputValue, index]))
     }
-
+    const deleteOneList = () => {
+        dispatch(deleteList(list.id))
+    }
     const addNewCard = () => {
-        const uniqueId = uuidv4()
-        const newBox = {
-            id: uniqueId,
-            sequence: listBox[index].card.length + 1,
-        }
-        dispatch(setNewCard([newBox, index]))
-        dispatch(newCard({ id: uniqueId }))
-    }
-    const deleteList = () => {
-        let deletedLists = listBox.filter((i) => i.id !== list.id)
-        dispatch(updateList(deletedLists))
+        dispatch(createCard(list.id))
     }
     return (
         <div>
             <div style={{ display: 'flex' }}>
-                <Button variant="outlined" onClick={handleClickOpen}>
-                    {list.name ? (
-                        <div>{list.name}</div>
-                    ) : (
-                        <div>List {index + 1}</div>
-                    )}
+                <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleClickOpen}
+                >
+                    {list.title}
                 </Button>
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Rename</DialogTitle>
@@ -75,22 +65,31 @@ export default function listDetails({ list, index }) {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={inputSubmit}>Confirm</Button>
+                        <Button color="secondary" onClick={handleClose}>
+                            Cancel
+                        </Button>
+                        <Button color="secondary" onClick={inputSubmit}>
+                            Confirm
+                        </Button>
                     </DialogActions>
                 </Dialog>
-                <Button onClick={deleteList}>
-                    <DeleteIcon />
+                <Button>
+                    <DeleteIcon onClick={deleteOneList} />
                 </Button>
             </div>
             <div>
-                {list.card.map((card, index) => (
-                    <CardBox key={card.id}>
-                        <CardDetails card={card} index={index} />
-                    </CardBox>
-                ))}
+                {allCards.map((card, index) => {
+                    if (card.listId === list.id)
+                        return (
+                            <CardBox key={card.id}>
+                                <CardsInList card={card} index={index} />
+                            </CardBox>
+                        )
+                })}
             </div>
-            <button onClick={addNewCard}>+ Add a card</button>
+            <button style={{ color: '#606060' }} onClick={addNewCard}>
+                +Add a card
+            </button>
         </div>
     )
 }
