@@ -6,10 +6,11 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
+import { APIKEY, GetCardOrderUrl } from '../constants'
 import { createCard, deleteList, updateListTitle } from '../redux/listSlice'
 import CardsInList from './cardsInList'
 
@@ -25,6 +26,8 @@ const CardBox = styled.div`
 export default function listDetails({ list, index }) {
     const dispatch = useDispatch()
     const { allCards } = useSelector((state) => state.list)
+    const allCardsInList = allCards.filter((card) => card.listId === list.id)
+    const [cardsInList, setCardsInList] = useState(allCardsInList)
     const [open, setOpen] = useState(false)
     const [inputValue, setInputValue] = useState('')
     const handleClickOpen = () => setOpen(true)
@@ -39,6 +42,34 @@ export default function listDetails({ list, index }) {
     const addNewCard = () => {
         dispatch(createCard(list.id))
     }
+
+    useEffect(() => {
+        const getCardsOrder = async () => {
+            const params = new URLSearchParams({ listId: list.id })
+            const fetchCardsOrder = await (
+                await fetch(`${GetCardOrderUrl}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-API-KEY': APIKEY,
+                    },
+                })
+            ).json()
+            const fetchCardsOrderData = fetchCardsOrder.data
+            let updatedCard = []
+            const orderedCardIds = fetchCardsOrderData[0].orderedCardIds
+            for (let i = 0; i < orderedCardIds.length; i++) {
+                for (let j = 0; j < cardsInList.length; j++) {
+                    if (orderedCardIds[i] === cardsInList[j].id) {
+                        updatedCard.push(cardsInList[j])
+                        break
+                    }
+                }
+            }
+            setCardsInList(updatedCard)
+        }
+        getCardsOrder()
+    }, [])
+
     return (
         <div>
             <div style={{ display: 'flex' }}>
@@ -78,13 +109,12 @@ export default function listDetails({ list, index }) {
                 </Button>
             </div>
             <div>
-                {allCards.map((card, index) => {
-                    if (card.listId === list.id)
-                        return (
-                            <CardBox key={card.id}>
-                                <CardsInList card={card} index={index} />
-                            </CardBox>
-                        )
+                {cardsInList.map((card, index) => {
+                    return (
+                        <CardBox key={card.id}>
+                            <CardsInList card={card} index={index} />
+                        </CardBox>
+                    )
                 })}
             </div>
             <button style={{ color: '#606060' }} onClick={addNewCard}>

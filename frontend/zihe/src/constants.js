@@ -15,4 +15,8 @@ export const CreateCardUrl =
     'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/createCard'
 export const UpdateCardUrl =
     'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/updateCard'
+export const GetListOrderUrl =
+    'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/getListOrder'
+export const GetCardOrderUrl =
+    'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/getCardOrder'
 export const APIKEY = 'gVEC2aZKAP7VPs1LmgIRx5DY1hjfYevu1vZxxfIM'

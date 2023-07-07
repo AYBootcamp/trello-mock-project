@@ -8,6 +8,7 @@ import {
     DeleteCardUrl,
     DeleteListUrl,
     GetCardsUrl,
+    GetListOrderUrl,
     GetListsUrl,
     UpdateCardUrl,
     UpdateListUrl,
@@ -26,7 +27,29 @@ export const fetchAllLists = createAsyncThunk(
             },
         })
         const data = await resp.json()
-        return data.data
+        const allData = data.data
+        let updatedList = []
+        const orderResp = await fetch(
+            `${GetListOrderUrl}?${params.toString()}`,
+            {
+                method: 'GET',
+                headers: {
+                    'X-API-KEY': APIKEY,
+                },
+            }
+        )
+        const orderData = await orderResp.json()
+        const orderedList = orderData.data
+        const orderedListIds = orderedList[0].orderedListIds
+        for (let i = 0; i < orderedListIds.length; i++) {
+            for (let j = 0; j < allData.length; j++) {
+                if (allData[j].id === orderedListIds[i]) {
+                    updatedList.push(allData[j])
+                    break
+                }
+            }
+        }
+        return updatedList
     }
 )
 
