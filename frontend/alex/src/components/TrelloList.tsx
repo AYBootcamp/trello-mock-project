@@ -15,10 +15,11 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { deleteList, ListData } from '../redux/listSlice'
 import { HoverBackgroundColor, LIST_WIDTH } from '../theme'
 import AddCardButton from './AddCardButton'
+import ConfirmationDialog from './ConfirmationDialog'
 import EditListTitle from './EditListTitle'
 import TrelloCard from './TrelloCard'
 
-const StyledList = styled(`div`)<{ isEditing: boolean }>((props) => ({
+const StyledList = styled(`div`)<{ isEditing?: boolean }>((props) => ({
     margin: '10px',
     padding: '10px',
     border: `1px solid ${props.theme.palette.background.paper}`,
@@ -29,7 +30,7 @@ const StyledList = styled(`div`)<{ isEditing: boolean }>((props) => ({
     color: '#c3ccd5 !important',
     height: '100%',
     overflow: 'hidden',
-    '& > :first-of-type :hover': {
+    '& > :first-child :hover': {
         cursor: 'pointer',
         backgroundColor: props.isEditing ? '' : HoverBackgroundColor,
         borderRadius: '5px',
@@ -61,6 +62,8 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
     const { title, id } = listData
     const [isEditingTitle, setIsEditingTitle] = useState(false)
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
+
     const cards = useAppSelector(selectCardsByListId(id))
     const isCreating = useAppSelector(isCardCreating(id))
     const dispatch = useAppDispatch()
@@ -114,12 +117,23 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
                     <IconButton
                         size="small"
                         onClick={() => {
-                            dispatch(deleteList(id))
+                            setConfirmDialogOpen(true)
                         }}
                     >
                         <DeleteForeverIcon />
                     </IconButton>
                 </Popover>
+                <ConfirmationDialog
+                    open={confirmDialogOpen}
+                    title={'Delete list'}
+                    desc={`You will be deleting list '${listData.title}' forever.`}
+                    handleClose={() => {
+                        setConfirmDialogOpen(false)
+                    }}
+                    handleConfirm={() => {
+                        dispatch(deleteList(id))
+                    }}
+                />
             </ListTitleWrapper>
             <Divider />
             <CardWrapper>

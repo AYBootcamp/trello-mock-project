@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { keyBy } from 'lodash'
 
-import { apiKey } from '../secrets'
+import { ALEX_BOARD_ID, apiKey } from '../secrets'
 import { RootState } from './store'
 
 export interface ListData {
@@ -12,12 +12,14 @@ export interface ListData {
 
 export interface ListState {
     isLoading: boolean
+    isCreating: boolean
     isUpdating: ListData['id'] | null
     data: Record<ListData['id'], ListData>
 }
 
 const initialState: ListState = {
     isLoading: true,
+    isCreating: false,
     isUpdating: null,
     data: {},
 }
@@ -74,6 +76,20 @@ export const listSlice = createSlice({
             const listId = action.meta.arg
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete state.data[listId]
+        })
+        builder.addCase(createNewList.pending, (state) => {
+            state.isCreating = true
+        })
+        builder.addCase(createNewList.fulfilled, (state, action) => {
+            const newList = action.payload.data as ListData
+            return {
+                ...state,
+                isCreating: false,
+                data: {
+                    ...state.data,
+                    [newList.id]: newList,
+                },
+            }
         })
     },
 })
@@ -152,10 +168,41 @@ export const deleteList = createAsyncThunk(
     }
 )
 
+export const createNewList = createAsyncThunk(
+    'list/createNewList',
+    async (title: ListData['title'], thunkApi) => {
+        const createListData = {
+            boardId: ALEX_BOARD_ID,
+            title,
+        }
+
+        const response = await fetch(
+            'https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/createList',
+            {
+                method: 'POST',
+                headers: {
+                    'X-API-KEY': apiKey,
+                },
+                body: JSON.stringify(createListData),
+            }
+        )
+
+        if (response.status !== 201) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
 // Selectors
 export const isListLoading = createSelector(
     (state: RootState) => state.list,
     (state) => state.isLoading
+)
+
+export const isListCreating = createSelector(
+    (state: RootState) => state.list,
+    (state) => state.isCreating
 )
 
 export const isListUpdating = (listId: ListData['id']) =>
