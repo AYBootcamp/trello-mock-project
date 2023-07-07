@@ -12,6 +12,10 @@ import {
     fetchListByBoardId,
     isListLoading as isListLoadingSelector,
 } from '../redux/listSlice'
+import {
+    fetchListOrder,
+    isListOrderLoading as isListOrderLoadingSelector,
+} from '../redux/orderSlice'
 import { ALEX_BOARD_ID } from '../secrets'
 import Navbar from './Navbar'
 
@@ -26,12 +30,14 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch()
     const isCardLoading = useAppSelector(isCardLoadingSelector)
     const isListLoading = useAppSelector(isListLoadingSelector)
-    const isDataLoading = isCardLoading || isListLoading
+    const isListOrderLoading = useAppSelector(isListOrderLoadingSelector)
+    const isDataLoading = isCardLoading || isListLoading || isListOrderLoading
 
     const fetchData = useCallback(async () => {
         await Promise.all([
             dispatch(fetchListByBoardId(ALEX_BOARD_ID)),
             dispatch(fetchCardByBoardId(ALEX_BOARD_ID)),
+            dispatch(fetchListOrder(ALEX_BOARD_ID)),
         ])
     }, [dispatch])
 

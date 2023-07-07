@@ -18,6 +18,7 @@ import { ALEX_BOARD_ID } from '../secrets'
 
 const Wrapper = styled('div')`
     margin: 10px 0;
+    width: 100%;
 `
 
 const StyledButton = styled(Button)`
@@ -70,13 +71,13 @@ const AddCardButton: React.FC<AddCardButtonProps> = ({ listId }) => {
     const renderContent = () => {
         if (createMode) {
             return (
-                <div>
+                <div style={{ width: '100%' }}>
                     <TextField
                         autoFocus
                         inputRef={titleInputRef}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        sx={{ marginBottom: '10px' }}
+                        sx={{ marginBottom: '10px', width: '100%' }}
                     />
                     <Divider />
                     <AddCardButtonWrapper>

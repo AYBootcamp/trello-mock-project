@@ -8,6 +8,7 @@ import {
     isListCreating as isCreatingSelector,
     isListLoading,
 } from '../redux/listSlice'
+import { listOrderSelector } from '../redux/orderSlice'
 import { LIST_WIDTH } from '../theme'
 import CreateNewList from './CreateNewList'
 import TrelloCardDetailView from './TrelloCardDetailView'
@@ -46,12 +47,13 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     const isLoading = useAppSelector(isListLoading)
     const isCreating = useAppSelector(isCreatingSelector)
     const listData = useAppSelector((state) => state.list.data)
+    const listOrder = useAppSelector(listOrderSelector)
 
     const renderLists = useCallback(() => {
-        return Object.keys(listData).map((listId) => (
+        return listOrder.map((listId) => (
             <TrelloList key={listId} listData={listData[listId]} />
         ))
-    }, [listData])
+    }, [listData, listOrder])
 
     const renderCreateNewList = useCallback(() => {
         if (isCreating) {
