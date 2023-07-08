@@ -1,37 +1,29 @@
 import { styled } from '@mui/material/styles'
+import { Link, Outlet } from 'react-router-dom'
 
-import cardRequests from './cardRequest'
-import listRequests from './listRequest'
-import MakeRequest from './MakeRequest'
-import orderRequests from './orderRequest'
+const StyledUl = styled('ul')``
 
-const MakeRequestContainer = styled('div')`
-    padding-left: 20px;
+const NavigationLink = styled(Link)`
+    list-style: none;
+    color: white;
+    font-size: large;
+    font-weight: bold;
+    text-decoration: underline;
+    margin: 0 10px;
 `
 
 const Playground = () => {
     return (
         <div>
+            <StyledUl>
+                <NavigationLink to="">Playground</NavigationLink>
+                <NavigationLink to="requests">Requests</NavigationLink>
+                <NavigationLink to="drag-and-drop">
+                    Drag and Drop
+                </NavigationLink>
+            </StyledUl>
             <h1>Playground</h1>
-            <h2>List Requests</h2>
-            <MakeRequestContainer>
-                {listRequests.map((request) => (
-                    <MakeRequest key={request.title} {...request} />
-                ))}
-            </MakeRequestContainer>
-            <h2>Card Requests</h2>
-            <MakeRequestContainer>
-                {cardRequests.map((request) => (
-                    <MakeRequest key={request.title} {...request} />
-                ))}
-            </MakeRequestContainer>
-
-            <h2>Order Requests</h2>
-            <MakeRequestContainer>
-                {orderRequests.map((request) => (
-                    <MakeRequest key={request.title} {...request} />
-                ))}
-            </MakeRequestContainer>
+            <Outlet />
         </div>
     )
 }

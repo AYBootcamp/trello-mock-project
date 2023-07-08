@@ -1,4 +1,4 @@
-import { ALEX_BOARD_ID } from '../../secrets'
+import { ALEX_BOARD_ID } from '../../../secrets'
 import { MakeRequestProps } from './MakeRequest'
 
 const getListParams = new URLSearchParams({

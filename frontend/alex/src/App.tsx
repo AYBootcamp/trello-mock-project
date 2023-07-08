@@ -6,6 +6,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import PageLayout from './components/PageLayout'
 import TrelloBoard from './components/TrelloBoard'
 import Playground from './domain/Playground'
+import DragAndDrop from './domain/Playground/drag-and-drop/DragAndDrop'
+import RequestPlayground from './domain/Playground/requests/RequestPlayground'
 import { store } from './redux/store'
 import theme from './theme'
 
@@ -33,7 +35,16 @@ const App = () => {
                                 <Route
                                     path="playground"
                                     element={<Playground />}
-                                />
+                                >
+                                    <Route
+                                        path="requests"
+                                        element={<RequestPlayground />}
+                                    />
+                                    <Route
+                                        path="drag-and-drop"
+                                        element={<DragAndDrop />}
+                                    />
+                                </Route>
                             </Routes>
                         </PageLayout>
                     </BrowserRouter>

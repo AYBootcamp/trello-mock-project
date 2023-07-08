@@ -6,9 +6,11 @@ import {
     IconButton,
     Popover,
     Typography,
+    useTheme,
 } from '@mui/material'
-import { styled } from '@mui/material/styles'
 import { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
+import styled from 'styled-components'
 
 import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
@@ -19,11 +21,14 @@ import ConfirmationDialog from './ConfirmationDialog'
 import EditListTitle from './EditListTitle'
 import TrelloCard from './TrelloCard'
 
-const StyledList = styled(`div`)<{ isEditing?: boolean }>((props) => ({
+const StyledList = styled(`div`)<{
+    isEditing?: boolean
+    backgroundColor: string
+}>((props) => ({
     margin: '10px',
     padding: '10px',
-    border: `1px solid ${props.theme.palette.background.paper}`,
-    backgroundColor: `${props.theme.palette.background.paper}`,
+    border: `1px solid ${props.backgroundColor}`,
+    backgroundColor: `${props.backgroundColor}`,
     width: LIST_WIDTH,
     minWidth: LIST_WIDTH,
     borderRadius: `10px`,
@@ -57,8 +62,11 @@ const TitleText = styled(Typography)`
 
 interface TrelloListProps {
     listData: ListData
+    index: number
 }
-const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
+
+const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
+    const theme = useTheme()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
     const { title, id } = listData
     const [isEditingTitle, setIsEditingTitle] = useState(false)
@@ -84,64 +92,74 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData }) => {
     }
     const open = Boolean(anchorEl)
     return (
-        <StyledList isEditing={isEditingTitle}>
-            <ListTitleWrapper>
-                {isEditingTitle ? (
-                    <EditListTitle
-                        listId={id}
-                        oldTitle={title}
-                        onBlur={() => setIsEditingTitle(false)}
-                    />
-                ) : (
-                    <TitleText
-                        variant="h6"
-                        onClick={() => setIsEditingTitle(true)}
-                    >
-                        {title}
-                    </TitleText>
-                )}
-
-                <IconButton size="small" onClick={handleClick}>
-                    <MoreHorizIcon />
-                </IconButton>
-                <Popover
-                    id={id}
-                    open={open}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
+        <Draggable draggableId={id} index={index}>
+            {(provided) => (
+                <StyledList
+                    backgroundColor={theme.palette.background.paper}
+                    isEditing={isEditingTitle}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
                 >
-                    <IconButton
-                        size="small"
-                        onClick={() => {
-                            setConfirmDialogOpen(true)
-                        }}
-                    >
-                        <DeleteForeverIcon />
-                    </IconButton>
-                </Popover>
-                <ConfirmationDialog
-                    open={confirmDialogOpen}
-                    title={'Delete list'}
-                    desc={`You will be deleting list '${listData.title}' forever.`}
-                    handleClose={() => {
-                        setConfirmDialogOpen(false)
-                    }}
-                    handleConfirm={() => {
-                        dispatch(deleteList(id))
-                    }}
-                />
-            </ListTitleWrapper>
-            <Divider />
-            <CardWrapper>
-                {renderCards()}
-                {isCreating && <CircularProgress />}
-                <AddCardButton listId={id} />
-            </CardWrapper>
-        </StyledList>
+                    <ListTitleWrapper>
+                        {isEditingTitle ? (
+                            <EditListTitle
+                                listId={id}
+                                oldTitle={title}
+                                onBlur={() => setIsEditingTitle(false)}
+                            />
+                        ) : (
+                            <TitleText
+                                variant="h6"
+                                onClick={() => setIsEditingTitle(true)}
+                            >
+                                {title}
+                            </TitleText>
+                        )}
+
+                        <IconButton size="small" onClick={handleClick}>
+                            <MoreHorizIcon />
+                        </IconButton>
+                        <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                        >
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    setConfirmDialogOpen(true)
+                                }}
+                            >
+                                <DeleteForeverIcon />
+                            </IconButton>
+                        </Popover>
+                        <ConfirmationDialog
+                            open={confirmDialogOpen}
+                            title={'Delete list'}
+                            desc={`You will be deleting list '${listData.title}' forever.`}
+                            handleClose={() => {
+                                setConfirmDialogOpen(false)
+                            }}
+                            handleConfirm={() => {
+                                dispatch(deleteList(id))
+                            }}
+                        />
+                    </ListTitleWrapper>
+                    <Divider />
+                    <CardWrapper>
+                        {renderCards()}
+                        {isCreating && <CircularProgress />}
+                        <AddCardButton listId={id} />
+                    </CardWrapper>
+                </StyledList>
+            )}
+        </Draggable>
     )
 }
 

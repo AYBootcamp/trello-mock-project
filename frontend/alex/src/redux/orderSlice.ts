@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { groupBy, keyBy } from 'lodash'
 
 import { apiKey } from '../secrets'
 import { CardData } from './cardSlice'
@@ -20,6 +19,7 @@ export interface OrderState {
     isListOrderLoading: boolean
     isCardOrderLoading: ListData['id'] | null
     cardOrder: Record<CardOrderData['id'], CardOrderData>
+    listOrderId: ListOrderData['id']
     listOrder: ListOrderData['orderedListIds']
 }
 
@@ -27,6 +27,7 @@ const initialState: OrderState = {
     isListOrderLoading: false,
     isCardOrderLoading: null,
     cardOrder: {},
+    listOrderId: '',
     listOrder: [],
 }
 
@@ -39,16 +40,29 @@ export const orderSlice = createSlice({
             state.isListOrderLoading = true
         })
         builder.addCase(fetchListOrder.fulfilled, (state, { payload }) => {
-            console.log({ payload })
             return {
                 ...state,
                 isListOrderLoading: false,
+                listOrderId: payload.data[0].id,
                 listOrder: payload.data[0]
                     .orderedListIds as ListOrderData['orderedListIds'],
             }
         })
         builder.addCase(fetchListOrder.rejected, (state, action) => {
             console.log('fetchListOrder failed', { action })
+        })
+        builder.addCase(updateListOrder.pending, (state, action) => {
+            state.isListOrderLoading = true
+        })
+        builder.addCase(updateListOrder.fulfilled, (state, action) => {
+            return {
+                ...state,
+                isListOrderLoading: false,
+                listOrder: action.meta.arg.orderedListIds,
+            }
+        })
+        builder.addCase(updateListOrder.rejected, (state, action) => {
+            console.log('updateListOrder failed', { action })
         })
     },
 })
@@ -70,6 +84,40 @@ export const fetchListOrder = createAsyncThunk(
             }
         )
         if (response.status !== 201) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
+export const updateListOrder = createAsyncThunk(
+    'order/updateListOrder',
+    async (
+        {
+            id,
+            orderedListIds,
+        }: { id: ListOrderData['id']; orderedListIds: Array<ListData['id']> },
+        thunkApi
+    ) => {
+        const updateListOrderParams = new URLSearchParams({
+            id,
+        })
+        const updateListOrderData = {
+            orderedListIds,
+        }
+
+        const response = await fetch(
+            `https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/updateListOrder?${updateListOrderParams.toString()}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'X-API-KEY': apiKey,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateListOrderData),
+            }
+        )
+        if (response.status !== 202) {
             return thunkApi.rejectWithValue(await response.json())
         }
         return await response.json()
