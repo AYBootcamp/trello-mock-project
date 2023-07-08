@@ -20,7 +20,7 @@ export const updateCardOrder = async (id, updatedAttributes) => {
         Key: {
             id: id,
         },
-        UpdateExpression: "SET orderedCardIds = :orderedCardIds",
+        UpdateExpression: "SET orderedCardIds = list_append(orderedCardIds, :orderedCardIds)",
         ExpressionAttributeValues: {
             ":orderedCardIds": updatedAttributes.orderedCardIds
         },

@@ -156,4 +156,4 @@ const createNewCardOrder = async (listId) => {
 }
 
 // boardId, title
-console.log(await createList('7128fdcf-c164-4494-8ba2-bf8097704eaf', 'test-list'))
+console.log(await createList('b5e54729-6dee-4947-8f1d-e8e0d04ae02f', 'test-list 2'))
