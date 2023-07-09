@@ -66,22 +66,22 @@ export const listSlice = createSlice({
             }
         })
         builder.addCase(deleteList.pending, (state, action) => {
-            state.isLoading = true
-        })
-        builder.addCase(deleteList.rejected, (state) => {
-            state.isLoading = false
-        })
-        builder.addCase(deleteList.fulfilled, (state, action) => {
-            state.isLoading = false
             const listId = action.meta.arg
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete state.data[listId]
+        })
+        builder.addCase(deleteList.rejected, (state, action) => {
+            console.error('deleteList failed', { action })
+        })
+        builder.addCase(deleteList.fulfilled, (state, action) => {
+            // do nothing
         })
         builder.addCase(createNewList.pending, (state) => {
             state.isCreating = true
         })
         builder.addCase(createNewList.fulfilled, (state, action) => {
             const newList = action.payload.data as ListData
+
             return {
                 ...state,
                 isCreating: false,

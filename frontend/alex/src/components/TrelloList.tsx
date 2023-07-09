@@ -15,6 +15,7 @@ import styled from 'styled-components'
 import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { deleteList, ListData } from '../redux/listSlice'
+import { removeIdFromListOrder } from '../redux/orderSlice'
 import { HoverBackgroundColor, LIST_WIDTH } from '../theme'
 import AddCardButton from './AddCardButton'
 import ConfirmationDialog from './ConfirmationDialog'
@@ -90,6 +91,12 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
         }
         return null
     }
+
+    const handleDelete = (id: ListData['id']) => {
+        dispatch(removeIdFromListOrder(id))
+        dispatch(deleteList(id))
+    }
+
     const open = Boolean(anchorEl)
     return (
         <Draggable draggableId={id} index={index}>
@@ -146,9 +153,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                             handleClose={() => {
                                 setConfirmDialogOpen(false)
                             }}
-                            handleConfirm={() => {
-                                dispatch(deleteList(id))
-                            }}
+                            handleConfirm={() => handleDelete(id)}
                         />
                     </ListTitleWrapper>
                     <Divider />

@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import {
+    createAsyncThunk,
+    createSelector,
+    createSlice,
+    PayloadAction,
+} from '@reduxjs/toolkit'
 
 import { apiKey } from '../secrets'
 import { CardData } from './cardSlice'
@@ -34,7 +39,19 @@ const initialState: OrderState = {
 export const orderSlice = createSlice({
     name: 'order',
     initialState,
-    reducers: {},
+    reducers: {
+        appendListOrder: (state, action: PayloadAction<ListData['id']>) => {
+            state.listOrder.push(action.payload)
+        },
+        removeIdFromListOrder: (
+            state,
+            action: PayloadAction<ListData['id']>
+        ) => {
+            state.listOrder = state.listOrder.filter(
+                (id) => id !== action.payload
+            )
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchListOrder.pending, (state, action) => {
             state.isListOrderLoading = true
@@ -52,14 +69,13 @@ export const orderSlice = createSlice({
             console.log('fetchListOrder failed', { action })
         })
         builder.addCase(updateListOrder.pending, (state, action) => {
-            state.isListOrderLoading = true
-        })
-        builder.addCase(updateListOrder.fulfilled, (state, action) => {
             return {
                 ...state,
-                isListOrderLoading: false,
                 listOrder: action.meta.arg.orderedListIds,
             }
+        })
+        builder.addCase(updateListOrder.fulfilled, (state, action) => {
+            // do nothing
         })
         builder.addCase(updateListOrder.rejected, (state, action) => {
             console.log('updateListOrder failed', { action })
@@ -137,6 +153,6 @@ export const listOrderSelector = createSelector(
 )
 
 // Action creators are generated for each case reducer function
-// export const {} = cardSlice.actions
+export const { appendListOrder, removeIdFromListOrder } = orderSlice.actions
 
 export default orderSlice.reducer

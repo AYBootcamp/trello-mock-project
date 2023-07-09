@@ -11,6 +11,7 @@ import { useState } from 'react'
 
 import { useAppDispatch } from '../redux/hooks'
 import { createNewList } from '../redux/listSlice'
+import { appendListOrder } from '../redux/orderSlice'
 
 const ButtonWrapper = styled('div')`
     display: flex;
@@ -27,8 +28,12 @@ const CreateNewList = () => {
         setTitle('')
     }
 
-    const onSubmit = () => {
-        dispatch(createNewList(title))
+    const onCreate = () => {
+        onSubmit()
+    }
+    const onSubmit = async () => {
+        const res = await dispatch(createNewList(title))
+        dispatch(appendListOrder(res.payload.data.id))
     }
     if (createMode) {
         return (
@@ -43,7 +48,7 @@ const CreateNewList = () => {
                     />
 
                     <ButtonWrapper sx={{ width: '100%' }}>
-                        <Button variant="contained" onClick={() => onSubmit()}>
+                        <Button variant="contained" onClick={onCreate}>
                             Add List
                         </Button>
                         <IconButton

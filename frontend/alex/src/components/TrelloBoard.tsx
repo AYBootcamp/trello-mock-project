@@ -39,6 +39,12 @@ const StyledList = styled(`div`)<{ backgroundColor: string }>((props) => ({
     overflow: 'hidden',
 }))
 
+const InnerScrollContainer = styled('div')`
+    overflow-y: hidden;
+    overflow-x: auto;
+    height: calc(100vh - 50px);
+`
+
 interface TrelloBoardProps {
     detailView?: 'card'
 }
@@ -95,8 +101,10 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     if (isLoading) {
         return <CircularProgress />
     }
+    console.log('rendering trello-board', { listOrder })
+
     return (
-        <>
+        <InnerScrollContainer>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable
                     droppableId="list"
@@ -123,7 +131,7 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
             </DragDropContext>
 
             {detailView && renderDetailViewComponent()}
-        </>
+        </InnerScrollContainer>
     )
 }
 
