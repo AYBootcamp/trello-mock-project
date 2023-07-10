@@ -2,6 +2,7 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { keyBy } from 'lodash'
 
 import { ALEX_BOARD_ID, apiKey } from '../secrets'
+import { updateSnackbar } from './appSlice'
 import { RootState } from './store'
 
 export interface ListData {
@@ -164,6 +165,14 @@ export const deleteList = createAsyncThunk(
         if (response.status !== 202) {
             return thunkApi.rejectWithValue(await response.json())
         }
+
+        thunkApi.dispatch(
+            updateSnackbar({
+                open: true,
+                severity: 'error',
+                message: `List deleted successfully`,
+            })
+        )
         return await response.json()
     }
 )
@@ -190,26 +199,32 @@ export const createNewList = createAsyncThunk(
         if (response.status !== 201) {
             return thunkApi.rejectWithValue(await response.json())
         }
+        thunkApi.dispatch(
+            updateSnackbar({
+                open: true,
+                severity: 'success',
+                message: `New list '${title}' created successfully`,
+            })
+        )
         return await response.json()
     }
 )
 
 // Selectors
+const listSelector = (state: RootState) => state.list
+
 export const isListLoading = createSelector(
-    (state: RootState) => state.list,
+    listSelector,
     (state) => state.isLoading
 )
 
 export const isListCreating = createSelector(
-    (state: RootState) => state.list,
+    listSelector,
     (state) => state.isCreating
 )
 
 export const isListUpdating = (listId: ListData['id']) =>
-    createSelector(
-        (state: RootState) => state.list,
-        (state) => state.isUpdating === listId
-    )
+    createSelector(listSelector, (state) => state.isUpdating === listId)
 
 // Action creators are generated for each case reducer function
 // export const {} = listSlice.actions

@@ -101,7 +101,6 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     if (isLoading) {
         return <CircularProgress />
     }
-    console.log('rendering trello-board', { listOrder })
 
     return (
         <InnerScrollContainer>

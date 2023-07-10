@@ -18,6 +18,7 @@ import {
 } from '../redux/orderSlice'
 import { ALEX_BOARD_ID } from '../secrets'
 import Navbar from './Navbar'
+import Snackbar from './Snackbar'
 
 const FullScreenContainer = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -70,6 +71,7 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ChildrenWrapper>
                 {isDataLoading ? <CircularProgress /> : children}
             </ChildrenWrapper>
+            <Snackbar />
         </FullScreenContainer>
     )
 }
