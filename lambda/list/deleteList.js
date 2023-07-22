@@ -19,7 +19,8 @@ const docClient = DynamoDBDocumentClient.from(client);
     2. Find the ListOrder object using List's boardId
     3. Update the ListOrder object with listId removed
     4. Delete Cards belong to the List
-    5. Remove the List object
+    5. Delete CardOrder by the list id
+    6. Remove the List object
 
 */
 export const deleteListById = async (listId) => {
@@ -72,7 +73,7 @@ export const deleteListById = async (listId) => {
         }
         const orderedCardIds = cardOrderResp.orderedCardIds
         await Promise.all(orderedCardIds.map(id => deleteCardById(id)))
-
+        await deleteCardOrder(cardOrderResp.id)
         await deleteList(listId)
         return {
             headers,
@@ -171,6 +172,25 @@ const updateListOrder = async (orderId, newOrderList) => {
         });
 }
 
+const deleteCardOrder = async (cardOrderId) => {
+    const params = {
+        TableName: CARD_ORDER_TABLE_NAME,
+        Key: {
+            id: cardOrderId,
+        },
+    };
+    const command = new DeleteCommand(params);
+
+    try {
+        await docClient.send(command);
+        console.log(`CardOrder with ID ${cardOrderId} deleted successfully.`);
+        return { statusCode: 202, message: JSON.stringify('Card Order deleted!') };
+    } catch (err) {
+        console.error(`Error deleting List with ID ${cardOrderId}:`, err);
+        throw err
+    }
+}
+
 
 const deleteList = async (id) => {
     const params = {
@@ -219,4 +239,4 @@ const findCardOrderByListId = async (listId) => {
 }
 
 // list id
-// console.log(await deleteListById('4cedf078-250d-4c2f-b1f5-dc395678cc6a'));
+console.log(await deleteListById('b813a9a4-0ee2-4cd6-b18a-6234768d0666'));

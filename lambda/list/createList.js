@@ -31,7 +31,7 @@ export const createList = async (boardId, title) => {
 
     try {
         const createListResp = await createNewList(listId, title, boardId)
-        await createNewCardOrder(listId)
+        await createNewCardOrder(boardId, listId)
         const listOrder = await findListOrderByBoardId(boardId)
         await addListIdToListOrderList(listOrder.id.S, listId)
         return {
@@ -131,12 +131,13 @@ const createNewList = async (listId, title, boardId) => {
     }
 }
 
-const createNewCardOrder = async (listId) => {
+const createNewCardOrder = async (boardId, listId) => {
     const cardOrderId = uuidv4()
     const orderedCardIds = []
     const cardOrder = {
         id: { S: cardOrderId },
         listId: { S: listId },
+        boardId: { S: boardId },
         orderedCardIds: { L: orderedCardIds }
     }
     const params = {

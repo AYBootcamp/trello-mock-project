@@ -9,7 +9,7 @@ import {
     useTheme,
 } from '@mui/material'
 import { useState } from 'react'
-import { Draggable } from 'react-beautiful-dnd'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 
 import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
@@ -61,6 +61,8 @@ const TitleText = styled(Typography)`
     width: 100%;
 `
 
+const CardDnDWrapper = styled('div')``
+
 interface TrelloListProps {
     listData: ListData
     index: number
@@ -85,10 +87,35 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
         setAnchorEl(null)
     }
 
-    const renderCards = () => {
+    const renderCards = (listId: ListData['id']) => {
         if (cards.length > 0) {
-            return cards.map((card) => <TrelloCard key={card.id} data={card} />)
+            return (
+                <Droppable droppableId={id} type="row">
+                    {(dropProvided, dropSnapshot) => (
+                        <CardDnDWrapper {...dropProvided.droppableProps}>
+                            <div ref={dropProvided.innerRef}>
+                                {cards.map((card, index) => (
+                                    <Draggable
+                                        key={card.id}
+                                        draggableId={card.id}
+                                        index={index}
+                                    >
+                                        {(dragProvided, dragSnapshot) => (
+                                            <TrelloCard
+                                                data={card}
+                                                dragProvided={dragProvided}
+                                            />
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {dropProvided.placeholder}
+                            </div>
+                        </CardDnDWrapper>
+                    )}
+                </Droppable>
+            )
         }
+
         return null
     }
 
@@ -105,10 +132,9 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                     backgroundColor={theme.palette.background.paper}
                     isEditing={isEditingTitle}
                     {...provided.draggableProps}
-                    {...provided.dragHandleProps}
                     ref={provided.innerRef}
                 >
-                    <ListTitleWrapper>
+                    <ListTitleWrapper {...provided.dragHandleProps}>
                         {isEditingTitle ? (
                             <EditListTitle
                                 listId={id}
@@ -158,7 +184,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                     </ListTitleWrapper>
                     <Divider />
                     <CardWrapper>
-                        {renderCards()}
+                        {renderCards(id)}
                         {isCreating && <CircularProgress />}
                         <AddCardButton listId={id} />
                     </CardWrapper>

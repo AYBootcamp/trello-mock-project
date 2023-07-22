@@ -2,6 +2,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { Paper, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
+import { DraggableProvided } from 'react-beautiful-dnd'
 import { useNavigate } from 'react-router-dom'
 
 import { CardData } from '../redux/cardSlice'
@@ -25,9 +26,10 @@ const TitleWrapper = styled('div')`
 
 interface TrelloCardProps {
     data: CardData
+    dragProvided: DraggableProvided
 }
 
-const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
+const TrelloCard: React.FC<TrelloCardProps> = ({ data, dragProvided }) => {
     const [isHover, setIsHover] = useState(false)
     const navigate = useNavigate()
 
@@ -42,6 +44,9 @@ const TrelloCard: React.FC<TrelloCardProps> = ({ data }) => {
             onClick={() => {
                 navigate(`/card/${data.id}`)
             }}
+            ref={dragProvided.innerRef}
+            {...dragProvided.draggableProps}
+            {...dragProvided.dragHandleProps}
         >
             <TitleWrapper>
                 <Typography sx={{ margin: '10px', width: '150px' }}>

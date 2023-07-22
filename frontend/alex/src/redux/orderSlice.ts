@@ -17,13 +17,14 @@ export interface ListOrderData {
 
 export interface CardOrderData {
     id: string
+    listId: ListData['id']
     orderedCardIds: Array<CardData['id']>
 }
 
 export interface OrderState {
     isListOrderLoading: boolean
     isCardOrderLoading: ListData['id'] | null
-    cardOrder: Record<CardOrderData['id'], CardOrderData>
+    cardOrder: Record<CardOrderData['listId'], CardOrderData>
     listOrderId: ListOrderData['id']
     listOrder: ListOrderData['orderedListIds']
 }
@@ -134,6 +135,28 @@ export const updateListOrder = createAsyncThunk(
             }
         )
         if (response.status !== 202) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
+export const fetchCardOrder = createAsyncThunk(
+    'order/fetchListOrder',
+    async (boardId: string, thunkApi) => {
+        const getCardOrderParams = new URLSearchParams({
+            boardId,
+        })
+        const response = await fetch(
+            `https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/getCardOrder?${getCardOrderParams.toString()}`,
+            {
+                method: 'GET',
+                headers: {
+                    'X-API-KEY': apiKey,
+                },
+            }
+        )
+        if (response.status !== 201) {
             return thunkApi.rejectWithValue(await response.json())
         }
         return await response.json()

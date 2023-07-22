@@ -60,7 +60,7 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     const listOrderId = useAppSelector((state) => state.order.listOrderId)
 
     const handleDragEnd = (result: DropResult) => {
-        const { destination, source, draggableId } = result
+        const { destination, source, draggableId, type } = result
         if (!destination) {
             return
         }
@@ -70,13 +70,22 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
         ) {
             return
         }
-        const newListOrder = Array.from(listOrder)
-        newListOrder.splice(result.source.index, 1)
-        newListOrder.splice(destination.index, 0, draggableId)
 
-        dispatch(
-            updateListOrder({ id: listOrderId, orderedListIds: newListOrder })
-        )
+        if (type === 'column') {
+            // drag and drop Lists
+            const newListOrder = Array.from(listOrder)
+            newListOrder.splice(result.source.index, 1)
+            newListOrder.splice(destination.index, 0, draggableId)
+            dispatch(
+                updateListOrder({
+                    id: listOrderId,
+                    orderedListIds: newListOrder,
+                })
+            )
+        } else if (type === 'row') {
+            // drag and drop Cards
+            console.log({ result })
+        }
     }
 
     const renderCreateNewList = useCallback(() => {

@@ -9,7 +9,7 @@ const dynamodb = new DynamoDBClient({
 });
 
 
-export const getCardOrder = async (listId) => {
+export const getCardOrder = async (boardId, listId) => {
 
     const headers = {
         "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
@@ -23,11 +23,19 @@ export const getCardOrder = async (listId) => {
         ScanIndexForward: true // Optional sorting option (true for ascending, false for descending)
     };
 
-    params.FilterExpression = 'listId = :listId';
-    params.ExpressionAttributeValues = {
-        ...marshall({ ':listId': listId })
-    };
-
+    if (boardId) {
+        params.FilterExpression = 'boardId = :boardId';
+        params.ExpressionAttributeValues = {
+            ...marshall({ ':boardId': boardId })
+        };
+    } else if (
+        listId
+    ) {
+        params.FilterExpression = 'listId = :listId';
+        params.ExpressionAttributeValues = {
+            ...marshall({ ':listId': listId })
+        };
+    }
 
     try {
         // Perform the scan operation
@@ -86,5 +94,5 @@ const getRemainingItems = async (params) => {
     }
 };
 
-// listId
-// console.log(await getCardOrder('b0800e1e-9f18-4697-8855-4e5729c0aa79'));
+// boardId, listId
+console.log(await getCardOrder('7128fdcf-c164-4494-8ba2-bf8097704eaf'));
