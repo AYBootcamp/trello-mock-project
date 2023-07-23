@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { groupBy, keyBy } from 'lodash'
+import { keyBy } from 'lodash'
 
 import { apiKey } from '../secrets'
 import { ListData } from './listSlice'
@@ -17,14 +17,12 @@ export interface CardState {
     isLoading: boolean
     isCreating: ListData['id'] | null
     data: Record<CardData['id'], CardData>
-    dataByListId: Record<ListData['id'], CardData[]>
 }
 
 const initialState: CardState = {
     isLoading: true,
     isCreating: null,
     data: {},
-    dataByListId: {},
 }
 
 export const cardSlice = createSlice({
@@ -43,14 +41,10 @@ export const cardSlice = createSlice({
                     CardData['id'],
                     CardData
                 >,
-                dataByListId: groupBy(payload.data, 'listId') as Record<
-                    ListData['id'],
-                    CardData[]
-                >,
             }
         })
         builder.addCase(fetchCardByBoardId.rejected, (state, action) => {
-            console.log('failed', { action })
+            console.error('fetchCardByBoardId failed', { action })
         })
         builder.addCase(createCard.pending, (state, action) => {
             return {
@@ -61,11 +55,6 @@ export const cardSlice = createSlice({
         builder.addCase(createCard.fulfilled, (state, { payload }) => {
             const { data }: { data: CardData } = payload
 
-            const newDataByListId = state.dataByListId[data.listId]
-                ? [...state.dataByListId[data.listId]]
-                : []
-
-            newDataByListId.push(data)
             return {
                 ...state,
                 isCreating: null,
@@ -74,10 +63,6 @@ export const cardSlice = createSlice({
                     [data.id]: {
                         ...data,
                     },
-                },
-                dataByListId: {
-                    ...state.dataByListId,
-                    [data.listId]: newDataByListId,
                 },
             }
         })
@@ -157,11 +142,13 @@ export const isCardLoading = createSelector(
 export const isCardCreating = (listId: ListData['id']) =>
     createSelector(cardSelector, (state) => state.isCreating === listId)
 
-export const selectCardsByListId = (listId: ListData['id']) =>
-    createSelector(cardSelector, (state) => state.dataByListId[listId] || [])
-
 export const selectCardByCardId = (cardId: CardData['id']) =>
     createSelector(cardSelector, (state) => state.data[cardId])
+
+export const cardDataSelector = createSelector(
+    cardSelector,
+    (state) => state.data
+)
 // Action creators are generated for each case reducer function
 // export const {} = cardSlice.actions
 

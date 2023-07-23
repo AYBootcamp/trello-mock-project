@@ -8,8 +8,14 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import {
     isListCreating as isCreatingSelector,
     isListLoading,
+    ListData,
 } from '../redux/listSlice'
-import { listOrderSelector, updateListOrder } from '../redux/orderSlice'
+import {
+    cardOrderSelector,
+    listOrderSelector,
+    updateCardOrder,
+    updateListOrder,
+} from '../redux/orderSlice'
 import { LIST_WIDTH } from '../theme'
 import CreateNewList from './CreateNewList'
 import TrelloCardDetailView from './TrelloCardDetailView'
@@ -58,6 +64,7 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
     const listData = useAppSelector((state) => state.list.data)
     const listOrder = useAppSelector(listOrderSelector)
     const listOrderId = useAppSelector((state) => state.order.listOrderId)
+    const cardOrders = useAppSelector(cardOrderSelector)
 
     const handleDragEnd = (result: DropResult) => {
         const { destination, source, draggableId, type } = result
@@ -84,7 +91,56 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
             )
         } else if (type === 'row') {
             // drag and drop Cards
-            console.log({ result })
+            if (destination.droppableId === source.droppableId) {
+                // within the same list
+                const listId = destination.droppableId
+                const cardOrder = cardOrders[listId]
+                const newOrderedIds = Array.from(cardOrder.orderedCardIds)
+                newOrderedIds.splice(result.source.index, 1)
+                newOrderedIds.splice(destination.index, 0, draggableId)
+
+                dispatch(
+                    updateCardOrder({
+                        id: cardOrder.id,
+                        listId,
+                        orderedCardIds: newOrderedIds,
+                    })
+                )
+            } else {
+                // update 2 cardOrder
+                // add Card Order
+                const listIdToAddCard = destination.droppableId
+                const cardOrderToAddCard = cardOrders[listIdToAddCard]
+
+                const newOrderedIdsToAddCard = Array.from(
+                    cardOrderToAddCard.orderedCardIds
+                )
+                newOrderedIdsToAddCard.splice(destination.index, 0, draggableId)
+
+                dispatch(
+                    updateCardOrder({
+                        id: cardOrderToAddCard.id,
+                        listId: listIdToAddCard,
+                        orderedCardIds: newOrderedIdsToAddCard,
+                    })
+                )
+
+                // Remove Card Order
+                const listIdToRemoveCard = source.droppableId
+                const cardOrderToRemoveCard = cardOrders[listIdToRemoveCard]
+
+                const newOrderedIdsToRemoveCard = Array.from(
+                    cardOrderToRemoveCard.orderedCardIds
+                )
+                newOrderedIdsToRemoveCard.splice(result.source.index, 1)
+                dispatch(
+                    updateCardOrder({
+                        id: cardOrderToRemoveCard.id,
+                        listId: listIdToRemoveCard,
+                        orderedCardIds: newOrderedIdsToRemoveCard,
+                    })
+                )
+            }
         }
     }
 

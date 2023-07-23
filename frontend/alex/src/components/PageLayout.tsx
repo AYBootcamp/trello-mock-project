@@ -13,6 +13,7 @@ import {
     isListLoading as isListLoadingSelector,
 } from '../redux/listSlice'
 import {
+    fetchCardOrder,
     fetchListOrder,
     isListOrderLoading as isListOrderLoadingSelector,
 } from '../redux/orderSlice'
@@ -39,6 +40,7 @@ const PageLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             dispatch(fetchListByBoardId(ALEX_BOARD_ID)),
             dispatch(fetchCardByBoardId(ALEX_BOARD_ID)),
             dispatch(fetchListOrder(ALEX_BOARD_ID)),
+            dispatch(fetchCardOrder(ALEX_BOARD_ID)),
         ])
     }, [dispatch])
 

@@ -11,9 +11,11 @@ import {
 import { styled } from '@mui/material/styles'
 import { useRef, useState } from 'react'
 
+import { updateSnackbar } from '../redux/appSlice'
 import { createCard as createCardRequest } from '../redux/cardSlice'
 import { useAppDispatch } from '../redux/hooks'
 import { ListData } from '../redux/listSlice'
+import { appendCardOrder } from '../redux/orderSlice'
 import { ALEX_BOARD_ID } from '../secrets'
 
 const Wrapper = styled('div')`
@@ -51,17 +53,29 @@ const AddCardButton: React.FC<AddCardButtonProps> = ({ listId }) => {
         setCreateMode(mode)
     }
 
-    const createCard = () => {
+    const handleClick = () => {
+        toggleCreateMode(false)
+        createCard()
+    }
+    const createCard = async () => {
         if (title !== '') {
-            dispatch(
+            const res = await dispatch(
                 createCardRequest({
                     boardId: ALEX_BOARD_ID,
                     listId,
                     title,
                 })
             )
-            toggleCreateMode(false)
+
             setTitle('')
+            dispatch(
+                updateSnackbar({
+                    open: true,
+                    severity: 'success',
+                    message: `New card '${title}' created successfully`,
+                })
+            )
+            dispatch(appendCardOrder({ listId, cardId: res.payload.data.id }))
         } else {
             // focus on title input
             titleInputRef.current?.focus()
@@ -85,7 +99,7 @@ const AddCardButton: React.FC<AddCardButtonProps> = ({ listId }) => {
                             size="small"
                             variant="contained"
                             sx={{ height: '100%' }}
-                            onClick={() => createCard()}
+                            onClick={handleClick}
                         >
                             Add Card
                         </Button>

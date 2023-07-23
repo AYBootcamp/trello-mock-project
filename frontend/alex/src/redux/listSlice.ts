@@ -44,7 +44,7 @@ export const listSlice = createSlice({
             }
         })
         builder.addCase(fetchListByBoardId.rejected, (state, action) => {
-            console.log('failed', { action })
+            console.error('fetchListByBoardId failed', { action })
         })
         builder.addCase(updateList.pending, (state, action) => {
             state.isUpdating = action.meta.arg.listId
@@ -82,7 +82,6 @@ export const listSlice = createSlice({
         })
         builder.addCase(createNewList.fulfilled, (state, action) => {
             const newList = action.payload.data as ListData
-
             return {
                 ...state,
                 isCreating: false,
@@ -91,6 +90,10 @@ export const listSlice = createSlice({
                     [newList.id]: newList,
                 },
             }
+        })
+        builder.addCase(createNewList.rejected, (state, action) => {
+            console.error('createNewList failed', { action })
+            state.isCreating = false
         })
     },
 })
@@ -199,13 +202,7 @@ export const createNewList = createAsyncThunk(
         if (response.status !== 201) {
             return thunkApi.rejectWithValue(await response.json())
         }
-        thunkApi.dispatch(
-            updateSnackbar({
-                open: true,
-                severity: 'success',
-                message: `New list '${title}' created successfully`,
-            })
-        )
+
         return await response.json()
     }
 )

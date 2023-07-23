@@ -4,8 +4,9 @@ import {
     createSlice,
     PayloadAction,
 } from '@reduxjs/toolkit'
+import { keyBy } from 'lodash'
 
-import { apiKey } from '../secrets'
+import { ALEX_BOARD_ID, apiKey } from '../secrets'
 import { CardData } from './cardSlice'
 import { ListData } from './listSlice'
 import { RootState } from './store'
@@ -16,14 +17,15 @@ export interface ListOrderData {
 }
 
 export interface CardOrderData {
-    id: string
+    id?: string
+    boardId: string
     listId: ListData['id']
     orderedCardIds: Array<CardData['id']>
 }
 
 export interface OrderState {
     isListOrderLoading: boolean
-    isCardOrderLoading: ListData['id'] | null
+    isCardOrderLoading: boolean
     cardOrder: Record<CardOrderData['listId'], CardOrderData>
     listOrderId: ListOrderData['id']
     listOrder: ListOrderData['orderedListIds']
@@ -31,7 +33,7 @@ export interface OrderState {
 
 const initialState: OrderState = {
     isListOrderLoading: false,
-    isCardOrderLoading: null,
+    isCardOrderLoading: false,
     cardOrder: {},
     listOrderId: '',
     listOrder: [],
@@ -52,6 +54,31 @@ export const orderSlice = createSlice({
                 (id) => id !== action.payload
             )
         },
+        appendCardOrder: (
+            state,
+            action: PayloadAction<{
+                listId: ListData['id']
+                cardId: CardData['id']
+            }>
+        ) => {
+            const { listId, cardId } = action.payload
+            state.cardOrder[listId]?.orderedCardIds.push(cardId)
+        },
+        addTempCardOrder: (
+            state,
+            action: PayloadAction<{ listId: ListData['id'] }>
+        ) => {
+            // after list is created, add a temporary card order in the redux (gone after next page refresh)
+            const { listId } = action.payload
+            const tempCardOrderData: CardOrderData = {
+                id: `temp-${listId}`,
+                boardId: ALEX_BOARD_ID,
+                listId,
+                orderedCardIds: [],
+            }
+
+            state.cardOrder[listId] = tempCardOrderData
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchListOrder.pending, (state, action) => {
@@ -67,7 +94,7 @@ export const orderSlice = createSlice({
             }
         })
         builder.addCase(fetchListOrder.rejected, (state, action) => {
-            console.log('fetchListOrder failed', { action })
+            console.error('fetchListOrder failed', { action })
         })
         builder.addCase(updateListOrder.pending, (state, action) => {
             return {
@@ -79,7 +106,47 @@ export const orderSlice = createSlice({
             // do nothing
         })
         builder.addCase(updateListOrder.rejected, (state, action) => {
-            console.log('updateListOrder failed', { action })
+            console.error('updateListOrder failed', { action })
+        })
+
+        builder.addCase(updateCardOrder.pending, (state, action) => {
+            const { listId, orderedCardIds } = action.meta.arg
+            return {
+                ...state,
+                cardOrder: {
+                    ...state.cardOrder,
+                    [listId]: {
+                        ...state.cardOrder[listId],
+                        orderedCardIds,
+                    },
+                },
+            }
+        })
+        builder.addCase(updateCardOrder.fulfilled, (state, action) => {
+            // do nothing
+        })
+        builder.addCase(updateCardOrder.rejected, (state, action) => {
+            console.error('updateListOrder failed', { action })
+        })
+        builder.addCase(fetchCardOrder.pending, (state, action) => {
+            return {
+                ...state,
+                isCardOrderLoading: true,
+            }
+        })
+        builder.addCase(fetchCardOrder.fulfilled, (state, action) => {
+            return {
+                ...state,
+                isCardOrderLoading: false,
+                cardOrder: keyBy(action.payload.data, 'listId'),
+            }
+        })
+        builder.addCase(fetchCardOrder.rejected, (state, action) => {
+            console.error('fetchCardOrder failed', { action })
+            return {
+                ...state,
+                isCardOrderLoading: false,
+            }
         })
     },
 })
@@ -142,7 +209,7 @@ export const updateListOrder = createAsyncThunk(
 )
 
 export const fetchCardOrder = createAsyncThunk(
-    'order/fetchListOrder',
+    'order/fetchCardOrder',
     async (boardId: string, thunkApi) => {
         const getCardOrderParams = new URLSearchParams({
             boardId,
@@ -163,6 +230,45 @@ export const fetchCardOrder = createAsyncThunk(
     }
 )
 
+export const updateCardOrder = createAsyncThunk(
+    'order/updateCardOrder',
+    async (
+        {
+            id,
+            listId,
+            orderedCardIds,
+        }: {
+            id: CardOrderData['id']
+            listId: ListData['id']
+            orderedCardIds: Array<CardData['id']>
+        },
+        thunkApi
+    ) => {
+        const updateCardOrderParams = new URLSearchParams({
+            id: id ?? '',
+        })
+        const updateCardOrderData = {
+            orderedCardIds,
+        }
+
+        const response = await fetch(
+            `https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/updateCardOrder?${updateCardOrderParams.toString()}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'X-API-KEY': apiKey,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateCardOrderData),
+            }
+        )
+        if (response.status !== 202) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+        return await response.json()
+    }
+)
+
 // Selectors
 const orderSelector = (state: RootState) => state.order
 
@@ -175,7 +281,19 @@ export const listOrderSelector = createSelector(
     (state) => state.listOrder
 )
 
+export const selectCardOrderByListId = (listId: ListData['id']) =>
+    createSelector(orderSelector, (state) => state.cardOrder[listId])
+
+export const cardOrderSelector = createSelector(
+    orderSelector,
+    (state) => state.cardOrder
+)
 // Action creators are generated for each case reducer function
-export const { appendListOrder, removeIdFromListOrder } = orderSlice.actions
+export const {
+    appendListOrder,
+    removeIdFromListOrder,
+    appendCardOrder,
+    addTempCardOrder,
+} = orderSlice.actions
 
 export default orderSlice.reducer

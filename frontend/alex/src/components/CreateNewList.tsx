@@ -9,9 +9,10 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
+import { updateSnackbar } from '../redux/appSlice'
 import { useAppDispatch } from '../redux/hooks'
-import { createNewList } from '../redux/listSlice'
-import { appendListOrder } from '../redux/orderSlice'
+import { createNewList, ListData } from '../redux/listSlice'
+import { addTempCardOrder, appendListOrder } from '../redux/orderSlice'
 
 const ButtonWrapper = styled('div')`
     display: flex;
@@ -33,7 +34,15 @@ const CreateNewList = () => {
     }
     const onSubmit = async () => {
         const res = await dispatch(createNewList(title))
+        dispatch(
+            updateSnackbar({
+                open: true,
+                severity: 'success',
+                message: `New list '${title}' created successfully`,
+            })
+        )
         dispatch(appendListOrder(res.payload.data.id))
+        dispatch(addTempCardOrder({ listId: res.payload.data.id }))
     }
     if (createMode) {
         return (

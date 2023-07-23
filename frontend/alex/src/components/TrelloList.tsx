@@ -12,10 +12,13 @@ import { useState } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 
-import { isCardCreating, selectCardsByListId } from '../redux/cardSlice'
+import { cardDataSelector, isCardCreating } from '../redux/cardSlice'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { deleteList, ListData } from '../redux/listSlice'
-import { removeIdFromListOrder } from '../redux/orderSlice'
+import {
+    removeIdFromListOrder,
+    selectCardOrderByListId,
+} from '../redux/orderSlice'
 import { HoverBackgroundColor, LIST_WIDTH } from '../theme'
 import AddCardButton from './AddCardButton'
 import ConfirmationDialog from './ConfirmationDialog'
@@ -75,7 +78,8 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
     const [isEditingTitle, setIsEditingTitle] = useState(false)
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
-    const cards = useAppSelector(selectCardsByListId(id))
+    const cards = useAppSelector(cardDataSelector)
+    const cardOrder = useAppSelector(selectCardOrderByListId(id))
     const isCreating = useAppSelector(isCardCreating(id))
     const dispatch = useAppDispatch()
 
@@ -87,14 +91,15 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
         setAnchorEl(null)
     }
 
-    const renderCards = (listId: ListData['id']) => {
-        if (cards.length > 0) {
-            return (
-                <Droppable droppableId={id} type="row">
-                    {(dropProvided, dropSnapshot) => (
-                        <CardDnDWrapper {...dropProvided.droppableProps}>
-                            <div ref={dropProvided.innerRef}>
-                                {cards.map((card, index) => (
+    const renderCards = () => {
+        return (
+            <Droppable droppableId={id} type="row">
+                {(dropProvided, dropSnapshot) => (
+                    <CardDnDWrapper {...dropProvided.droppableProps}>
+                        <div ref={dropProvided.innerRef}>
+                            {cardOrder?.orderedCardIds.map((cardId, index) => {
+                                const card = cards[cardId]
+                                return (
                                     <Draggable
                                         key={card.id}
                                         draggableId={card.id}
@@ -107,16 +112,14 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                                             />
                                         )}
                                     </Draggable>
-                                ))}
-                                {dropProvided.placeholder}
-                            </div>
-                        </CardDnDWrapper>
-                    )}
-                </Droppable>
-            )
-        }
-
-        return null
+                                )
+                            })}
+                            {dropProvided.placeholder}
+                        </div>
+                    </CardDnDWrapper>
+                )}
+            </Droppable>
+        )
     }
 
     const handleDelete = (id: ListData['id']) => {
@@ -184,7 +187,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                     </ListTitleWrapper>
                     <Divider />
                     <CardWrapper>
-                        {renderCards(id)}
+                        {renderCards()}
                         {isCreating && <CircularProgress />}
                         <AddCardButton listId={id} />
                     </CardWrapper>
