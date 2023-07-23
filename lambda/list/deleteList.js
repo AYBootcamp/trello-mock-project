@@ -1,6 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, DeleteCommand, GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { deleteCardById } from '../card/deleteCard'
+import { deleteCardById } from '../card/deleteCard.js'
 
 const REGION = 'ca-central-1'
 const LIST_TABLE_NAME = 'trello-list';
@@ -61,7 +61,6 @@ export const deleteListById = async (listId) => {
         await updateListOrder(listOrderResp.id, newOrderList)
 
         const cardOrderResp = await findCardOrderByListId(listId)
-
         if (!cardOrderResp) {
             return {
                 headers,
@@ -72,7 +71,7 @@ export const deleteListById = async (listId) => {
             };
         }
         const orderedCardIds = cardOrderResp.orderedCardIds
-        await Promise.all(orderedCardIds.map(id => deleteCardById(id)))
+        await Promise.all(orderedCardIds.map(id => deleteCardById(id, listId)))
         await deleteCardOrder(cardOrderResp.id)
         await deleteList(listId)
         return {
@@ -239,4 +238,4 @@ const findCardOrderByListId = async (listId) => {
 }
 
 // list id
-console.log(await deleteListById('b813a9a4-0ee2-4cd6-b18a-6234768d0666'));
+console.log(await deleteListById('32011409-5526-40f1-8711-913e6e7bba2a'));

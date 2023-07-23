@@ -9,7 +9,7 @@ const dynamodb = new DynamoDBClient({
 });
 
 
-export const getCards = async (substring, listId, boardId) => {
+export const getCards = async (substring, boardId) => {
 
     const headers = {
         "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
@@ -42,16 +42,6 @@ export const getCards = async (substring, listId, boardId) => {
         params.ExpressionAttributeValues = {
             ...params.ExpressionAttributeValues,
             ...marshall({ ':title': substring })
-        };
-    }
-
-    // Check if filtering by matching listId is requested
-    if (listId) {
-        // Update the filter expression and attribute values based on existing filter expressions
-        params.FilterExpression += ' AND listId = :listId';
-        params.ExpressionAttributeValues = {
-            ...params.ExpressionAttributeValues,
-            ...marshall({ ':listId': listId })
         };
     }
 
@@ -113,5 +103,5 @@ const getRemainingItems = async (params) => {
     }
 };
 
-// substring, listId, boardId
-// console.log(await getCards(undefined, undefined, '16bf7333-eac2-40e8-9a04-41ba99c042c0'));
+// substring, boardId
+// console.log(await getCards(undefined, '16bf7333-eac2-40e8-9a04-41ba99c042c0'));

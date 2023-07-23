@@ -17,7 +17,7 @@ const docClient = DynamoDBDocumentClient.from(client);
     3. Update the CardOrder object with cardId removed
     4. Remove the Card object
 */
-export const deleteCardById = async (cardId) => {
+export const deleteCardById = async (cardId, listId) => {
     const headers = {
         "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
         "Access-Control-Allow-Origin": "*",
@@ -34,7 +34,8 @@ export const deleteCardById = async (cardId) => {
                 })
             };
         }
-        const cardOrderResp = await findCardOrderByListId(card.listId)
+
+        const cardOrderResp = await findCardOrderByListId(listId)
 
         if (!cardOrderResp) {
             return {
@@ -169,5 +170,5 @@ const updateCardOrder = async (orderId, newOrderList) => {
         });
 }
 
-// card id
+// card id, listId
 // console.log(await deleteCardById('89340522-bf89-4e93-a26f-57bd07810956'));
