@@ -31,7 +31,11 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             )}
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleConfirm} autoFocus>
+                <Button
+                    data-test="dialog-confirm"
+                    onClick={handleConfirm}
+                    autoFocus
+                >
                     Confirm
                 </Button>
             </DialogActions>

@@ -34,6 +34,7 @@
         "@types/react-beautiful-dnd": "^13.1.4",
         "@types/react-dom": "^18.0.11",
         "@types/styled-components": "^5.1.26",
+        "cypress": "^12.17.2",
         "eslint": "^8.27.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-config-standard-with-typescript": "^23.0.0",

@@ -146,6 +146,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                             />
                         ) : (
                             <TitleText
+                                data-test={`list-title-${index}`}
                                 variant="h6"
                                 onClick={() => setIsEditingTitle(true)}
                             >
@@ -153,7 +154,11 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                             </TitleText>
                         )}
 
-                        <IconButton size="small" onClick={handleClick}>
+                        <IconButton
+                            data-test="list-action-dropdown-btn"
+                            size="small"
+                            onClick={handleClick}
+                        >
                             <MoreHorizIcon />
                         </IconButton>
                         <Popover
@@ -167,6 +172,7 @@ const TrelloList: React.FC<TrelloListProps> = ({ listData, index }) => {
                             }}
                         >
                             <IconButton
+                                data-test="list-action-delete-btn"
                                 size="small"
                                 onClick={() => {
                                     setConfirmDialogOpen(true)

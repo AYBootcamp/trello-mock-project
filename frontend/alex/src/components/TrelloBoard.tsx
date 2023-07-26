@@ -180,13 +180,15 @@ const TrelloBoard: React.FC<TrelloBoardProps> = ({ detailView }) => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {listOrder.map((listId, index) => (
-                                <TrelloList
-                                    key={listId}
-                                    listData={listData[listId]}
-                                    index={index}
-                                />
-                            ))}
+                            {listOrder.map((listId, index) => {
+                                return (
+                                    <TrelloList
+                                        key={listId}
+                                        listData={listData[listId]}
+                                        index={index}
+                                    />
+                                )
+                            })}
                             {provided.placeholder}
                             {renderCreateNewList()}
                         </ListContainer>

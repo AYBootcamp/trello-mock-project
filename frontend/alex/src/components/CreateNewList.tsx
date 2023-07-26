@@ -49,6 +49,7 @@ const CreateNewList = () => {
             <ClickAwayListener onClickAway={cancelCreate}>
                 <div>
                     <Input
+                        data-test="new-list-title-input"
                         autoFocus
                         placeholder="Enter list title..."
                         value={title}
@@ -57,7 +58,11 @@ const CreateNewList = () => {
                     />
 
                     <ButtonWrapper sx={{ width: '100%' }}>
-                        <Button variant="contained" onClick={onCreate}>
+                        <Button
+                            data-test="confirm-create-new-list-btn"
+                            variant="contained"
+                            onClick={onCreate}
+                        >
                             Add List
                         </Button>
                         <IconButton
@@ -74,6 +79,7 @@ const CreateNewList = () => {
 
     return (
         <Button
+            data-test="add-new-list-btn"
             startIcon={<AddIcon />}
             onClick={() => setCreateMode(true)}
             sx={{ width: '100%', display: 'flex', justifyContent: 'start' }}
