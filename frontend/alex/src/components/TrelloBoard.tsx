@@ -17,9 +17,9 @@ import {
     updateListOrder,
 } from '../redux/orderSlice'
 import { LIST_WIDTH } from '../theme'
-import CreateNewList from './CreateNewList'
 import TrelloCardDetailView from './TrelloCardDetailView'
-import TrelloList from './TrelloList'
+import CreateNewList from './TrelloList/CreateNewList'
+import TrelloList from './TrelloList/TrelloList'
 
 const ListContainer = styled('div')`
     display: flex;

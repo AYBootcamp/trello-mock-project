@@ -8,8 +8,8 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { isListUpdating, ListData, updateList } from '../redux/listSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { isListUpdating, ListData, updateList } from '../../redux/listSlice'
 
 interface EditListTitleProps {
     listId: ListData['id']

@@ -9,10 +9,10 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-import { updateSnackbar } from '../redux/appSlice'
-import { useAppDispatch } from '../redux/hooks'
-import { createNewList, ListData } from '../redux/listSlice'
-import { addTempCardOrder, appendListOrder } from '../redux/orderSlice'
+import { updateSnackbar } from '../../redux/appSlice'
+import { useAppDispatch } from '../../redux/hooks'
+import { createNewList } from '../../redux/listSlice'
+import { addTempCardOrder, appendListOrder } from '../../redux/orderSlice'
 
 const ButtonWrapper = styled('div')`
     display: flex;
@@ -29,9 +29,15 @@ const CreateNewList = () => {
         setTitle('')
     }
 
+    const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+        if (e.key === 'Enter') {
+            onSubmit()
+        }
+    }
     const onCreate = () => {
         onSubmit()
     }
+
     const onSubmit = async () => {
         const res = await dispatch(createNewList(title))
         dispatch(
@@ -44,6 +50,7 @@ const CreateNewList = () => {
         dispatch(appendListOrder(res.payload.data.id))
         dispatch(addTempCardOrder({ listId: res.payload.data.id }))
     }
+
     if (createMode) {
         return (
             <ClickAwayListener onClickAway={cancelCreate}>
@@ -55,6 +62,7 @@ const CreateNewList = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         sx={{ padding: '5px', width: '100%' }}
+                        onKeyDown={onKeyDown}
                     />
 
                     <ButtonWrapper sx={{ width: '100%' }}>

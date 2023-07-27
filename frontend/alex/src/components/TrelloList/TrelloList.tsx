@@ -12,18 +12,18 @@ import { useState } from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 
-import { cardDataSelector, isCardCreating } from '../redux/cardSlice'
-import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { deleteList, ListData } from '../redux/listSlice'
+import { cardDataSelector, isCardCreating } from '../../redux/cardSlice'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { deleteList, ListData } from '../../redux/listSlice'
 import {
     removeIdFromListOrder,
     selectCardOrderByListId,
-} from '../redux/orderSlice'
-import { HoverBackgroundColor, LIST_WIDTH } from '../theme'
-import AddCardButton from './AddCardButton'
-import ConfirmationDialog from './ConfirmationDialog'
+} from '../../redux/orderSlice'
+import { HoverBackgroundColor, LIST_WIDTH } from '../../theme'
+import AddCardButton from '../AddCardButton'
+import ConfirmationDialog from '../ConfirmationDialog'
+import TrelloCard from '../TrelloCard'
 import EditListTitle from './EditListTitle'
-import TrelloCard from './TrelloCard'
 
 const StyledList = styled(`div`)<{
     isEditing?: boolean
