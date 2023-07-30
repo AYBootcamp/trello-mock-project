@@ -11,12 +11,12 @@ import {
 import { styled } from '@mui/material/styles'
 import { useRef, useState } from 'react'
 
-import { updateSnackbar } from '../redux/appSlice'
-import { createCard as createCardRequest } from '../redux/cardSlice'
-import { useAppDispatch } from '../redux/hooks'
-import { ListData } from '../redux/listSlice'
-import { appendCardOrder } from '../redux/orderSlice'
-import { ALEX_BOARD_ID } from '../secrets'
+import { updateSnackbar } from '../../redux/appSlice'
+import { createCard as createCardRequest } from '../../redux/cardSlice'
+import { useAppDispatch } from '../../redux/hooks'
+import { ListData } from '../../redux/listSlice'
+import { appendCardOrder } from '../../redux/orderSlice'
+import { ALEX_BOARD_ID } from '../../secrets'
 
 const Wrapper = styled('div')`
     margin: 10px 0;

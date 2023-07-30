@@ -10,9 +10,10 @@ import {
 import { styled } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 
-import { CardData, selectCardByCardId } from '../redux/cardSlice'
-import { useAppSelector } from '../redux/hooks'
-import theme, { CardBackgroundColor } from '../theme'
+import { CardData, selectCardByCardId } from '../../redux/cardSlice'
+import { useAppSelector } from '../../redux/hooks'
+import theme, { CardBackgroundColor } from '../../theme'
+import CardDescription from './CardDescription'
 
 const DetailViewContainer = styled(Paper)<{ isSmallScreen: boolean }>(
     (props) => ({
@@ -56,8 +57,10 @@ const TrelloCardDetailView: React.FC<TrelloCardDetailViewProps> = ({
                     </Grid>
                     <Grid container>
                         <Grid item>
-                            <Typography variant="h6">Description</Typography>
-                            {description}
+                            <CardDescription
+                                description={description}
+                                cardId={cardId}
+                            />
                         </Grid>
                     </Grid>
                 </Grid>

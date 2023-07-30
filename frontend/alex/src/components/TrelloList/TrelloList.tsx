@@ -20,9 +20,9 @@ import {
     selectCardOrderByListId,
 } from '../../redux/orderSlice'
 import { HoverBackgroundColor, LIST_WIDTH } from '../../theme'
-import AddCardButton from '../AddCardButton'
 import ConfirmationDialog from '../ConfirmationDialog'
-import TrelloCard from '../TrelloCard'
+import AddCardButton from '../TrelloCard/AddCardButton'
+import TrelloCard from '../TrelloCard/TrelloCard'
 import EditListTitle from './EditListTitle'
 
 const StyledList = styled(`div`)<{

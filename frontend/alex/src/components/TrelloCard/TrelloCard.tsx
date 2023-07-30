@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { DraggableProvided } from 'react-beautiful-dnd'
 import { useNavigate } from 'react-router-dom'
 
-import { CardData } from '../redux/cardSlice'
-import { CardBackgroundColor, HoverBackgroundColor } from '../theme'
+import { CardData } from '../../redux/cardSlice'
+import { CardBackgroundColor, HoverBackgroundColor } from '../../theme'
 
 const StyledCard = styled(Paper)(({ theme }) => ({
     backgroundColor: CardBackgroundColor,

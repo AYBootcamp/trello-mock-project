@@ -17,7 +17,7 @@ import {
     updateListOrder,
 } from '../redux/orderSlice'
 import { LIST_WIDTH } from '../theme'
-import TrelloCardDetailView from './TrelloCardDetailView'
+import TrelloCardDetailView from './TrelloCard/TrelloCardDetailView'
 import CreateNewList from './TrelloList/CreateNewList'
 import TrelloList from './TrelloList/TrelloList'
 
