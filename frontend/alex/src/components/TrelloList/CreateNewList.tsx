@@ -74,6 +74,7 @@ const CreateNewList = () => {
                             Add List
                         </Button>
                         <IconButton
+                            data-test="cancel-create-new-list-btn"
                             onClick={cancelCreate}
                             sx={{ marginLeft: 'auto' }}
                         >

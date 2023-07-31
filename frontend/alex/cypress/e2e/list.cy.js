@@ -21,6 +21,14 @@ describe('e2e test list', () => {
         cy.get('[data-test=confirm-create-new-list-btn').click()
     })
 
+    it('can cancel create', ()=> {
+        cy.get('[data-test=add-new-list-btn]').click()
+        // type the test title into input
+        cy.get('[data-test=new-list-title-input').type(
+            CYPRESS_TEST_NEW_LIST_TITLE
+        )
+        cy.get('[data-test=cancel-create-new-list-btn').click()
+    })
     it('can delete list', () => {
         // scroll to the end of page
         cy.contains(CYPRESS_TEST_NEW_LIST_TITLE).scrollIntoView()
