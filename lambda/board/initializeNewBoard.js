@@ -63,4 +63,4 @@ const createNewListOrder = async (boardId) => {
 }
 
 // Only execute this script when setting up a new board
-console.log(await (initializeNewBoard('Test')))
+console.log(await (initializeNewBoard('Demo')))
