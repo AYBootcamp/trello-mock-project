@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close'
 import {
     ClickAwayListener,
+    Divider,
     Grid,
     IconButton,
     Paper,
@@ -43,7 +44,7 @@ const TrelloCardDetailView: React.FC<TrelloCardDetailViewProps> = ({
     return (
         <ClickAwayListener onClickAway={handleCloseEditor}>
             <DetailViewContainer isSmallScreen={isSmallScreen}>
-                <Grid container>
+                <Grid container id="card-top-grid-container" direction="column">
                     <Grid container>
                         <Grid item sx={{ display: 'flex', width: '100%' }}>
                             <Typography variant="h5">{title}</Typography>
@@ -55,8 +56,9 @@ const TrelloCardDetailView: React.FC<TrelloCardDetailViewProps> = ({
                             </IconButton>
                         </Grid>
                     </Grid>
-                    <Grid container>
-                        <Grid item>
+                    <Divider />
+                    <Grid container sx={{ width: '100%', paddingTop: '16px' }}>
+                        <Grid item sx={{ width: '50%' }}>
                             <CardDescription
                                 description={description}
                                 cardId={cardId}

@@ -13,6 +13,13 @@ export interface CardData {
     description?: string
 }
 
+type UpdateCardData = Omit<
+    {
+        [K in keyof CardData]?: CardData[K]
+    },
+    'id' | 'boardId'
+>
+
 export interface CardState {
     isLoading: boolean
     isCreating: ListData['id'] | null
@@ -65,6 +72,22 @@ export const cardSlice = createSlice({
                     },
                 },
             }
+        })
+        builder.addCase(updateCard.pending, (state, action) => {
+            const { id, updatedCard } = action.meta.arg
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    [id]: {
+                        ...state.data[id],
+                        ...updatedCard,
+                    },
+                },
+            }
+        })
+        builder.addCase(updateCard.rejected, (state, action) => {
+            console.error('updateCard failed', { action })
         })
     },
 })
@@ -127,6 +150,40 @@ export const createCard = createAsyncThunk(
         if (response.status !== 201) {
             return thunkApi.rejectWithValue(await response.json())
         }
+        return await response.json()
+    }
+)
+
+export const updateCard = createAsyncThunk(
+    'card/updateCard',
+    async (
+        {
+            id,
+            updatedCard,
+        }: {
+            id: CardData['id']
+            updatedCard: UpdateCardData
+        },
+        thunkApi
+    ) => {
+        const updateCardParams = new URLSearchParams({
+            id,
+        })
+        const response = await fetch(
+            `https://2qgj2kp27f.execute-api.ca-central-1.amazonaws.com/prod/updateCard?${updateCardParams.toString()}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'X-API-KEY': apiKey,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedCard),
+            }
+        )
+        if (response.status !== 202) {
+            return thunkApi.rejectWithValue(await response.json())
+        }
+
         return await response.json()
     }
 )
